@@ -10,7 +10,8 @@ export default function TabsLayout() {
         elevation: 0,
         borderTopWidth: 1,
         paddingTop: 8,
-      }
+      },
+      headerShown: false, 
     }}>
       <Tabs.Screen name="index" options={{
         title: "Home",
