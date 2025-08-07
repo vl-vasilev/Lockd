@@ -1,11 +1,11 @@
-import { Text, View } from "react-native";
+import ProfileSection from "@/components/ProfileSection";
+import PageStyle from "@/constants/PageStyle";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-export default function SavedScreen(){
+export default function SavedScreen() {
     return (
-        <View>
-            <Text>
-                This is the notes page
-            </Text>
-        </View>
+        <SafeAreaView style={PageStyle}>
+            <ProfileSection />
+        </SafeAreaView>
     )
 }

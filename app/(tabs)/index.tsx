@@ -1,9 +1,13 @@
-import { Text, View } from "react-native";
+import ProfileSection from "@/components/ProfileSection";
+import PageStyle from "@/constants/PageStyle";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Index() {
   return (
-    <View>
-      <Text> This is the home page. </Text>
-    </View>
+    <SafeAreaView style = {PageStyle}>
+      <ProfileSection/>
+    </SafeAreaView>
   );
 }
+
+

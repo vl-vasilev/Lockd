@@ -9,7 +9,7 @@ export default function TabsLayout() {
       tabBarStyle: {
         elevation: 0,
         borderTopWidth: 1,
-        paddingTop: 8,
+        paddingTop: 4,
       },
       headerShown: false, 
     }}>
