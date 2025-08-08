@@ -1,3 +1,5 @@
+import Colors from "./Colors";
+
 const Typography = {
     heading18: {
         fontSize: 18,
@@ -23,6 +25,11 @@ const Typography = {
         fontSize: 14,
         fontWeight: "normal" as "normal",
         color: "hsl(0, 0%, 30%)"
+    },
+    cardSpecificText: {
+        fontSize: 16,
+        fontWeight: "normal" as "normal",
+        color: Colors.primary
     },
 };
 

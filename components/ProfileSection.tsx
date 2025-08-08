@@ -1,10 +1,9 @@
 import Typography from "@/constants/Typography";
 import { Image, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ProfileCard() {
     return (
-        <SafeAreaView style={styles.card}>
+        <View style={styles.card}>
             <View style={styles.profileContainer}>
                 <Image source={require('../assets/images/avatar.png')} style={styles.avatar} />
                 <View style={styles.cardTextContainer}>
@@ -17,7 +16,7 @@ export default function ProfileCard() {
                 <Image source={require('../assets/images/coin.png')} style={styles.coin} />
                 <Text style = {Typography.default16}> 100 </Text>
             </View>
-        </SafeAreaView>
+        </View>
     );
 }
 
@@ -27,6 +26,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
+        marginBottom: 16,
     },
 
     profileContainer: {
@@ -53,7 +53,4 @@ const styles = StyleSheet.create({
         width: 20,
         height: 20,
     },
-    das: {
-        
-    }
 })

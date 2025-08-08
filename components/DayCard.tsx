@@ -6,7 +6,8 @@ interface CardProps {
   style?: ViewStyle | ViewStyle[];
 }
 
-export default function Card({children, style} : CardProps){
+export default function DayCard({children, style} : CardProps){
+
     return (
         <View style = {[styles.card, style]}>
             {children}
@@ -16,11 +17,15 @@ export default function Card({children, style} : CardProps){
 
 const styles = StyleSheet.create({
     card: {
-        alignSelf: "stretch",
+        flex: 1,
         backgroundColor: Colors.cardBackgroundColor,
         borderColor: Colors.cardStrokeColor,
         borderWidth: 1,
         borderRadius: 12,
-        padding: 12,
-    }
+    },
+    selectedCard: {
+        flex: 1,
+        backgroundColor: Colors.primary,
+        borderRadius: 12,
+    },
 });
