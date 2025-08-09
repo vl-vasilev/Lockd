@@ -1,17 +1,23 @@
 import Colors from "@/constants/Colors";
-import { StyleSheet, View, ViewStyle } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 
 interface CardProps {
-  children: React.ReactNode;
-  style?: ViewStyle | ViewStyle[];
+    children: React.ReactNode;
+    isSelected: boolean;
+    setSelectedId: any;
+    itemId: string;
 }
 
-export default function DayCard({children, style} : CardProps){
+export default function DayCard({ children, isSelected, setSelectedId, itemId }: CardProps) {
 
     return (
-        <View style = {[styles.card, style]}>
-            {children}
-        </View>
+        <TouchableOpacity
+        onPress={() => setSelectedId(itemId)}
+        >
+            <View style={[isSelected ? styles.selectedCard : styles.card, ]}>
+                {children}
+            </View>
+        </TouchableOpacity>
     );
 }
 
@@ -22,10 +28,20 @@ const styles = StyleSheet.create({
         borderColor: Colors.cardStrokeColor,
         borderWidth: 1,
         borderRadius: 12,
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        width: 60,
+        padding: 4,
     },
     selectedCard: {
         flex: 1,
-        backgroundColor: Colors.primary,
+        backgroundColor: Colors.backgroundPrimary,
         borderRadius: 12,
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        width: 62,
+        padding: 4,
     },
 });

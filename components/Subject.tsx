@@ -2,18 +2,27 @@ import Typography from "@/constants/Typography";
 import Octicons from "@react-native-vector-icons/octicons";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-export default function Subject() {
+
+interface SubjectProps {
+    name: string;
+    start: string;
+    end: string;
+}
+
+export default function Subject({ name, start, end }: SubjectProps) {
     return (
         <View style={styles.subjectContainer}>
             <View style={styles.subjectInfo}>
-                <Text style={[styles.subjectTime, Typography.secondary14]}> 8:00 - 8:40 </Text>
+                <View style = {styles.timeContainer}>
+                    <Text style={ Typography.secondary14}> {start} - {end} </Text>
+                </View>
                 <View style={styles.subjectNameAndCircle}>
                     <View style={styles.subjectCircle} />
-                    <Text style={[styles.subjectName, Typography.default16]}> Physics </Text>
+                    <Text style={ Typography.default16}> {name} </Text>
                 </View>
             </View>
             <TouchableOpacity>
-                <Octicons style={styles.optionsIcon} name="kebab-horizontal" size={16} />
+                <Octicons name="kebab-horizontal" size={16} />
             </TouchableOpacity>
         </View>
 
@@ -31,8 +40,8 @@ const styles = StyleSheet.create({
         alignItems: "center",
         gap: 16,
     },
-    subjectTime: {
-
+    timeContainer: {
+        width: 100,
     },
     subjectNameAndCircle: {
         flexDirection: "row",
@@ -45,11 +54,4 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         backgroundColor: '#3498db',
     },
-    subjectName: {
-
-    },
-    optionsIcon: {
-
-    },
-
 })
