@@ -1,12 +1,18 @@
 import Card from "@/components/Card";
+import Contact from "@/components/Contact";
 import DayCard from "@/components/DayCard";
 import ProfileSection from "@/components/ProfileSection";
+import Separator from "@/components/Separator";
 import Subject from "@/components/Subject";
+import Colors from "@/constants/Colors";
 import PageStyle from "@/constants/PageStyle";
 import Typography from "@/constants/Typography";
+import Octicons from "@react-native-vector-icons/octicons";
 import { useState } from "react";
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+
+
 
 type DayCardData = {
     id: string;
@@ -255,36 +261,21 @@ const INITIALSUBJECTDATA: SubjectData[] = [
 
 
 
+
 export default function SavedScreen() {
-    const [selectedId, setSelectedId] = useState<string>("1");
+    const [selectedDayId, setSelectedDayId] = useState<string>("1");
     const [subjectData, setSubjectData] = useState<SubjectData[]>(INITIALSUBJECTDATA);
 
+    const [searchQuery, setSearchQuery] = useState('');
+    const [selectedContactCategory, setSelectedContactCategory] = useState<string>("Students");
 
-    const renderDayCard = ({ item }: { item: DayCardData }) => {
-        const isSelected = item.id === selectedId;
-
-        return (
-            <DayCard isSelected={isSelected} setSelectedId={setSelectedId} itemId={item.id}>
-                <Text style={[Typography.heading18, styles.dateText]}> {item.date} </Text>
-                <Text style={[Typography.secondary14, styles.dayText]}> {item.day} </Text>
-            </DayCard>
-        )
-    }
-
-
-    const selectedDayData = subjectData.find(day => day.id === selectedId);
+    const selectedDayData = subjectData.find(day => day.id === selectedDayId);
     const subjectsToRender = selectedDayData ? selectedDayData.subjects : [];
-
-    const renderSubjects = ({ item }: { item: Subject }) => {
-        return (
-            <Subject name={item.name} start={item.start} end={item.end} />
-        )
-    }
 
     function addClass() {
         setSubjectData(prevData => {
             return prevData.map(day => {
-                if (day.id === selectedId) {
+                if (day.id === selectedDayId) {
                     return {
                         ...day,
                         subjects: [
@@ -305,45 +296,115 @@ export default function SavedScreen() {
     return (
         <SafeAreaProvider>
             <SafeAreaView style={PageStyle}>
-                <ProfileSection />
+                <ScrollView
+                    showsVerticalScrollIndicator={false}
+                >
 
-                <View style={styles.aboveCardText}>
-                    <Text style={[Typography.heading18]}> Timetable </Text>
-                    <TouchableOpacity
-                        onPress={addClass}
-                    >
-                        <Text style={[Typography.cardSpecificText]}> + Add Class </Text>
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.timetableSection}>
-                    <View style={styles.daysContainer}>
-                        <FlatList
-                            data={DAYCARDDATA}
-                            renderItem={renderDayCard}
-                            keyExtractor={item => item.id}
-                            extraData={selectedId}
-                            horizontal={true}
-                            contentContainerStyle={{
-                                flexGrow: 1,
-                                justifyContent: 'space-between', // or 'space-around' or 'space-evenly'
-                                height: 70,
-                            }}
+                    <ProfileSection />
+
+                    <View style={styles.aboveCardText}>
+                        <Text style={[Typography.heading18]}> Timetable </Text>
+                        <TouchableOpacity
+                            onPress={addClass}
+                        >
+                            <Text style={[Typography.cardSpecificText]}> + Add Class </Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.timetableSection}>
+                        <View style={styles.daysContainer}>
+                            {DAYCARDDATA.map((item) => {
+                                const isSelected = item.id === selectedDayId;
+                                return (
+                                    <DayCard
+                                        key={item.id}
+                                        isSelected={isSelected}
+                                        setSelectedId={setSelectedDayId}
+                                        itemId={item.id}
+                                    >
+                                        <Text style={[Typography.heading18, styles.dateText]}> {item.date} </Text>
+                                        <Text style={[Typography.secondary14, styles.dayText]}> {item.day} </Text>
+                                    </DayCard>
+                                );
+                            })}
+                        </View>
+
+                        <Card style={styles.allSubjects}> 
+                            {subjectsToRender.map((item, index) => {
+                                return (
+                                    <Subject
+                                        key={`${selectedDayId}-${index}`}
+                                        name={item.name}
+                                        start={item.start}
+                                        end={item.end}
+                                    />
+                                )
+
+                            })}
+                        </Card>
+                    </View>
+
+                    <View style={styles.aboveCardText}>
+                        <Text style={[Typography.heading18]}> Contacts </Text>
+                        <TouchableOpacity
+                        >
+                            <Text style={[Typography.cardSpecificText]}> + Add Contact </Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={styles.searchContainer}> 
+                        <Octicons name = "search" size={16} />
+                        <TextInput
+                            style={styles.searchInput}
+                            placeholder="Search contacts..."
+                            value={searchQuery}
+                            onChangeText={setSearchQuery}
                         />
                     </View>
 
-                    <Card style={styles.allSubjects}>
-                        <FlatList
-                            data={subjectsToRender}
-                            renderItem={renderSubjects}
-                            keyExtractor={(item, index) => `${selectedId}-${index}`}
-                            contentContainerStyle={{
-                                gap: 4,
-                            }}
-                        />
+                    <View style={styles.contactsCategoriesContainer}>
+                        <TouchableOpacity
+                            onPress={() => setSelectedContactCategory("Students")}
+                            style={styles.contactCategory}
+                        >
+                            <Card
+                                isSelected={selectedContactCategory === "Students"}
+                            >
+                                <Text style = {{textAlign: "center"}}> Students </Text>
+                            </Card>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => setSelectedContactCategory("Teachers")}
+                            style={styles.contactCategory}
+                        >
+                            <Card
+                                isSelected={selectedContactCategory === "Teachers"}
+                            >
+                                <Text style = {{textAlign: "center"}}> Teachers </Text>
+                            </Card>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => setSelectedContactCategory("Favorites")}
+                            style={styles.contactCategory}
+                        >
+                            <Card
+                                isSelected={selectedContactCategory === "Favorites"}
+                            >
+                                <Text style = {{textAlign: "center"}}> Favorites </Text>
+                            </Card>
+                        </TouchableOpacity>
+                    </View>
+                    <Card style={styles.contactsContainer}>
+                        <Contact name = "Vlado" formOfContact="dsda@gmail.com"/>
+                        <Separator />
+                        <Contact name = "Vlado" formOfContact="dsda@gmail.com"/>
+                        <Separator />
+                        <Contact name = "Vlado" formOfContact="dsda@gmail.com"/>
+                        <Separator />
+                        <Contact name = "Vlado" formOfContact="dsda@gmail.com"/>
+                        <Separator />
+                        <Contact name = "Vlado" formOfContact="dsda@gmail.com"/>
                     </Card>
-                </View>
-
-
+                </ScrollView>
             </SafeAreaView>
         </SafeAreaProvider>
 
@@ -357,14 +418,15 @@ const styles = StyleSheet.create({
         marginBottom: 8,
     },
     timetableSection: {
-        flex: 1,
         flexDirection: "column",
         gap: 16,
+        marginBottom: 24,
     },
     daysContainer: {
         flexDirection: "row",
-        justifyContent: "space-around",
-        gap: 20,
+        justifyContent: 'space-between',
+        height: 70,
+        alignItems: 'center',
     },
     dateText: {
         textAlign: "center",
@@ -374,9 +436,40 @@ const styles = StyleSheet.create({
         textAlign: "center",
         verticalAlign: "middle",
     },
-
     allSubjects: {
         flexDirection: "column",
         gap: 4,
+    },
+
+    searchContainer: {
+        backgroundColor: Colors.cardBackgroundColor,
+        borderColor: Colors.cardStrokeColor,
+        borderWidth: 1,
+        borderRadius: 12,
+
+        paddingHorizontal: 12,
+        paddingVertical: 0,
+        flexDirection: "row",
+        // justifyContent: "space-between",
+        gap: 8,
+        alignItems: "center",
+    },
+    searchInput: {
+        color: "black",
+        paddingHorizontal: 4,
+    },
+    contactsCategoriesContainer: {
+        marginTop: 16,
+        flexDirection: "row",
+        justifyContent: "space-between",
+        gap: 16,
+    },
+    contactCategory: {
+        alignSelf: "stretch",
+        flex: 1,
+    },
+
+    contactsContainer: {
+        marginVertical: 16,
     }
 })

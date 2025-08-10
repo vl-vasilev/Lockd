@@ -9,7 +9,7 @@ const Typography = {
     heading16: {
         fontSize: 16,
         fontWeight: "bold" as "bold",
-        color: "hsl(0, 0%, 0%)"
+        color: "hsl(0, 0%, 0%)",
     },
     default16: {
         fontSize: 16,
