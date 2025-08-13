@@ -2,7 +2,7 @@ import Colors from "@/constants/Colors";
 import { StyleSheet, View, ViewStyle } from "react-native";
 
 interface CardProps {
-  children: React.ReactNode;
+  children: React.ReactNode | any;
   style?: ViewStyle | ViewStyle[];
   isSelected?: boolean;
 }
@@ -17,7 +17,6 @@ export default function Card({children, style, isSelected = false} : CardProps){
 
 const styles = StyleSheet.create({
     card: {
-        flex: 1,
         backgroundColor: Colors.cardBackgroundColor,
         borderColor: Colors.cardStrokeColor,
         borderWidth: 1,
@@ -26,7 +25,6 @@ const styles = StyleSheet.create({
         paddingVertical: 8,
     },
     selectedCard: {
-        flex: 1,
         backgroundColor: Colors.backgroundPrimary,
         borderColor: Colors.backgroundPrimary,
         borderWidth: 1,

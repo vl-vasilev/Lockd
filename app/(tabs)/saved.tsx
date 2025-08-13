@@ -1,3 +1,4 @@
+import AboveCardText from "@/components/AboveCardText";
 import Card from "@/components/Card";
 import Contact from "@/components/Contact";
 import DayCard from "@/components/DayCard";
@@ -8,7 +9,7 @@ import Colors from "@/constants/Colors";
 import PageStyle from "@/constants/PageStyle";
 import Typography from "@/constants/Typography";
 import Octicons from "@react-native-vector-icons/octicons";
-import { useState } from "react";
+import React, { useState } from "react";
 import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
@@ -259,6 +260,63 @@ const INITIALSUBJECTDATA: SubjectData[] = [
 
 ]
 
+type Contact = {
+    name: string;
+    contactInfo: string;
+}
+
+const TEACHERS: Contact[] = [
+    {
+        name: "Mr. Vasilev",
+        contactInfo: "v.vasilev@oakwoodschool.edu"
+    },
+    {
+        name: "Ms. Chen",
+        contactInfo: "+1-555-0123"
+    },
+    {
+        name: "Dr. Rodriguez",
+        contactInfo: "e.rodriguez@university.edu"
+    },
+    {
+        name: "Mr. Thompson",
+        contactInfo: "+1-555-0198"
+    },
+    {
+        name: "Prof. Park",
+        contactInfo: "@ProfParkMath"
+    }
+];
+
+const STUDENTS: Contact[] = [
+    {
+        name: "Alex Martinez",
+        contactInfo: "@alex_mart99"
+    },
+    {
+        name: "Emma Wilson",
+        contactInfo: "emma.wilson23@gmail.com"
+    },
+    {
+        name: "Jordan Taylor",
+        contactInfo: "+1-555-0176"
+    },
+    {
+        name: "Zoe Chen",
+        contactInfo: "@zoechen_art"
+    },
+    {
+        name: "Ryan Foster",
+        contactInfo: "ryan.foster@student.edu"
+    }
+];
+
+const FAVORITES: Contact[] = [
+    {
+        name: "Favorite",
+        contactInfo: "Favorite Contact Info"
+    }
+]
 
 
 
@@ -267,7 +325,7 @@ export default function SavedScreen() {
     const [subjectData, setSubjectData] = useState<SubjectData[]>(INITIALSUBJECTDATA);
 
     const [searchQuery, setSearchQuery] = useState('');
-    const [selectedContactCategory, setSelectedContactCategory] = useState<string>("Students");
+    const [selectedContactCategory, setSelectedContactCategory] = useState<Array<Contact>>(STUDENTS);
 
     const selectedDayData = subjectData.find(day => day.id === selectedDayId);
     const subjectsToRender = selectedDayData ? selectedDayData.subjects : [];
@@ -293,23 +351,36 @@ export default function SavedScreen() {
         });
     }
 
+    function renderContacts(contacts: Array<Contact>) {
+        return contacts.map((item, index) => {
+            return (
+                <React.Fragment key={index}>
+                    <Contact
+                        key={index}
+                        name={item.name}
+                        contactInfo={item.contactInfo}
+                    />
+                    {index < contacts.length - 1 && <Separator />}
+                </React.Fragment>
+            )
+        })
+    }
+
+
     return (
         <SafeAreaProvider>
             <SafeAreaView style={PageStyle}>
                 <ScrollView
                     showsVerticalScrollIndicator={false}
                 >
-
                     <ProfileSection />
 
-                    <View style={styles.aboveCardText}>
-                        <Text style={[Typography.heading18]}> Timetable </Text>
-                        <TouchableOpacity
-                            onPress={addClass}
-                        >
-                            <Text style={[Typography.cardSpecificText]}> + Add Class </Text>
-                        </TouchableOpacity>
-                    </View>
+
+                    <AboveCardText 
+                    title="Timetable"
+                    buttonText="Class"
+                    onButtonPress={addClass}
+                    />
                     <View style={styles.timetableSection}>
                         <View style={styles.daysContainer}>
                             {DAYCARDDATA.map((item) => {
@@ -328,7 +399,7 @@ export default function SavedScreen() {
                             })}
                         </View>
 
-                        <Card style={styles.allSubjects}> 
+                        <Card style={styles.allSubjects}>
                             {subjectsToRender.map((item, index) => {
                                 return (
                                     <Subject
@@ -343,16 +414,13 @@ export default function SavedScreen() {
                         </Card>
                     </View>
 
-                    <View style={styles.aboveCardText}>
-                        <Text style={[Typography.heading18]}> Contacts </Text>
-                        <TouchableOpacity
-                        >
-                            <Text style={[Typography.cardSpecificText]}> + Add Contact </Text>
-                        </TouchableOpacity>
-                    </View>
+                    <AboveCardText
+                    title="Contacts"
+                    buttonText="Contact"
+                    />
 
-                    <View style={styles.searchContainer}> 
-                        <Octicons name = "search" size={16} />
+                    <View style={styles.searchContainer}>
+                        <Octicons name="search" size={16} />
                         <TextInput
                             style={styles.searchInput}
                             placeholder="Search contacts..."
@@ -363,46 +431,40 @@ export default function SavedScreen() {
 
                     <View style={styles.contactsCategoriesContainer}>
                         <TouchableOpacity
-                            onPress={() => setSelectedContactCategory("Students")}
+                            onPress={() => setSelectedContactCategory(STUDENTS)}
                             style={styles.contactCategory}
                         >
                             <Card
-                                isSelected={selectedContactCategory === "Students"}
+                                isSelected={selectedContactCategory === STUDENTS}
                             >
-                                <Text style = {{textAlign: "center"}}> Students </Text>
+                                <Text style={{ textAlign: "center" }}> Students </Text>
                             </Card>
                         </TouchableOpacity>
                         <TouchableOpacity
-                            onPress={() => setSelectedContactCategory("Teachers")}
+                            onPress={() => setSelectedContactCategory(TEACHERS)}
                             style={styles.contactCategory}
                         >
                             <Card
-                                isSelected={selectedContactCategory === "Teachers"}
+                                isSelected={selectedContactCategory === TEACHERS}
                             >
-                                <Text style = {{textAlign: "center"}}> Teachers </Text>
+                                <Text style={{ textAlign: "center" }}> Teachers </Text>
                             </Card>
                         </TouchableOpacity>
                         <TouchableOpacity
-                            onPress={() => setSelectedContactCategory("Favorites")}
+                            onPress={() => setSelectedContactCategory(FAVORITES)}
                             style={styles.contactCategory}
                         >
                             <Card
-                                isSelected={selectedContactCategory === "Favorites"}
+                                isSelected={selectedContactCategory === FAVORITES}
                             >
-                                <Text style = {{textAlign: "center"}}> Favorites </Text>
+                                <Text style={{ textAlign: "center" }}> Favorites </Text>
                             </Card>
                         </TouchableOpacity>
                     </View>
                     <Card style={styles.contactsContainer}>
-                        <Contact name = "Vlado" formOfContact="dsda@gmail.com"/>
-                        <Separator />
-                        <Contact name = "Vlado" formOfContact="dsda@gmail.com"/>
-                        <Separator />
-                        <Contact name = "Vlado" formOfContact="dsda@gmail.com"/>
-                        <Separator />
-                        <Contact name = "Vlado" formOfContact="dsda@gmail.com"/>
-                        <Separator />
-                        <Contact name = "Vlado" formOfContact="dsda@gmail.com"/>
+                        {
+                            renderContacts(selectedContactCategory)
+                        }
                     </Card>
                 </ScrollView>
             </SafeAreaView>
@@ -410,6 +472,7 @@ export default function SavedScreen() {
 
     )
 }
+
 
 const styles = StyleSheet.create({
     aboveCardText: {
@@ -450,7 +513,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 12,
         paddingVertical: 0,
         flexDirection: "row",
-        // justifyContent: "space-between",
         gap: 8,
         alignItems: "center",
     },

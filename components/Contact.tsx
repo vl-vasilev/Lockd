@@ -5,15 +5,15 @@ import { StyleSheet, Text, TouchableOpacity, View, ViewStyle } from "react-nativ
 interface ContactProps {
     style?: ViewStyle | ViewStyle[];
     name: string;
-    formOfContact: string; //can be email, phone, ig etc.
+    contactInfo: string; //can be email, phone, ig etc.
 }
 
-export default function Contact({ style, name, formOfContact }: ContactProps) {
+export default function Contact({ style, name, contactInfo }: ContactProps) {
     return (
         <View style={[styles.contact, style]}>
             <View style={styles.infoContainer}>
                 <Text style={Typography.heading16} > {name} </Text>
-                <Text style={Typography.secondary14}> {formOfContact} </Text>
+                <Text style={Typography.secondary14}> {contactInfo} </Text>
             </View>
             <TouchableOpacity>
                 <Octicons name="kebab-horizontal" size={16} />
