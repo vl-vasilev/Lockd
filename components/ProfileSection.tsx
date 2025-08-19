@@ -1,32 +1,43 @@
+import Colors from "@/constants/Colors";
 import Typography from "@/constants/Typography";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Link } from "expo-router";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
 export default function ProfileCard() {
-    return (
-        <View style={styles.card}>
-            <View style={styles.profileContainer}>
-                <Image source={require('../assets/images/avatar.png')} style={styles.avatar} />
-                <View style={styles.cardTextContainer}>
-                    <Text style={Typography.secondary14}> Good Morning </Text>
-                    <Text style={Typography.heading18}> Vlado </Text>
-                </View>
-            </View>
 
-            <View style={styles.coinsContainer}>
-                <Image source={require('../assets/images/coin.png')} style={styles.coin} />
-                <Text style = {Typography.default16}> 100 </Text>
-            </View>
-        </View>
+
+    return (
+        <Link href = "/profile" asChild>
+            <Pressable>
+                <View style={styles.card}>
+                    <View style={styles.profileContainer}>
+                        <Image source={require('../assets/images/avatar.png')} style={styles.avatar} />
+                        <View style={styles.cardTextContainer}>
+                            <Text style={[Typography.secondary14, Typography.selectedText]}> Good Morning </Text>
+                            <Text style={[Typography.heading20, Typography.selectedText]}> Vlado </Text>
+                        </View>
+                    </View>
+
+                    <View style={styles.coinsContainer}>
+                        <Text style={[Typography.heading16, Typography.selectedText]}> 100 </Text>
+                        <Image source={require('../assets/images/coin.png')} style={styles.coin} />
+                    </View>
+                </View>
+            </Pressable>
+        </Link>
     );
 }
 
 const styles = StyleSheet.create({
     card: {
-        // backgroundColor: '#bf878cff',
+        backgroundColor: Colors.primary,
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        marginBottom: 16,
+        padding: 16,
+        borderBottomLeftRadius: 16,
+        borderBottomRightRadius: 16,
+        marginBottom: 8,
     },
 
     profileContainer: {
@@ -35,15 +46,16 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     avatar: {
-        width: 55,
-        height: 60,
+        width: 48,
+        height: 48,
+        borderRadius: 32,
     },
     cardTextContainer: {
         flexDirection: "column",
         justifyContent: "space-between",
         alignItems: "flex-start",
     },
-    
+
     coinsContainer: {
         flexDirection: "row",
         justifyContent: "center",

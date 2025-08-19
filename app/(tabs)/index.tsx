@@ -2,10 +2,19 @@ import Card from "@/components/Card";
 import ProfileSection from "@/components/ProfileSection";
 import Colors from "@/constants/Colors";
 import PageStyle from "@/constants/PageStyle";
+import Typography from "@/constants/Typography";
 import { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { Calendar } from "react-native-calendars";
 import { SafeAreaView } from "react-native-safe-area-context";
+
+function formatDate(dateString: string): string {
+  const date = new Date(dateString);
+  const day = date.getDate();
+  const suffix = day > 3 && day < 21 ? 'th' : ['th', 'st', 'nd', 'rd'][day % 10] || 'th';
+  const month = date.toLocaleDateString('en', { month: 'long' });
+  return `${day}${suffix} ${month}`;
+};
 
 const SUBJECTDOTCOLORS = {
   biology: '#61ad67ff',
@@ -24,7 +33,7 @@ type MarkedDatesType = {
 };
 
 export default function Index() {
-  
+
 
   const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
   const [selectedDate, setSelectedDate] = useState<string>(today);
@@ -73,7 +82,7 @@ export default function Index() {
       [selectedDate]: {
         ...markedDates[selectedDate], // Preserve existing dots and other properties
         selected: true,
-        selectedColor: Colors.backgroundPrimary,
+        selectedColor: Colors.primary,
         selectedTextColor: '#ffffff',
       }
     })
@@ -85,53 +94,59 @@ export default function Index() {
   return (
     <SafeAreaView style={PageStyle}>
       <ProfileSection />
-      <Calendar
-        onDayPress={(day) => {
-          setSelectedDate(day.dateString);
-        }}
-        markedDates={finalMarkedDates}
-        markingType="multi-dot"
-
-        style={styles.calendar}
-        theme={{
-          calendarBackground: '#ffffff',
-          textSectionTitleColor: '#b6c1cd',
-          todayTextColor: '#00adf5',
-          dayTextColor: '#000000ff',
-          textMonthFontSize: 24,
-          textMonthFontWeight: 600,
-          monthTextColor: '#000000ff',
-          selectedDayBackgroundColor: Colors.backgroundPrimary,
-          selectedDayTextColor: '#ffffff',
-          dotStyle: {
-            width: 6,
-            height: 6,
-            borderRadius: 3,
-          },
-        }}
-      />
-      <View style={styles.legend}>
-      </View>
-
-      <Card>
-        <Text>  
-          {dotNames.length > 0
-            ? dotNames.join(', ') + ` on ${selectedDate}`
-            : `No dots on ${selectedDate}`}
-        </Text>
-      </Card>
-
-      <TouchableOpacity
-        onPress={() => {
-          addDot('2025-08-13', 'Biology');
-        }}
-        style={{ padding: 16, backgroundColor: Colors.primary, borderRadius: 8, marginTop: 16 }}
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={{ paddingHorizontal: 16 }}
       >
-        <Text>
-          Add Biology Dot on 2025-08-13
-        </Text>
-      </TouchableOpacity>
 
+        <Card>
+          <Calendar
+            onDayPress={(day) => {
+              setSelectedDate(day.dateString);
+            }}
+            markedDates={finalMarkedDates}
+            markingType="multi-dot"
+
+            style={styles.calendar}
+            theme={{
+              calendarBackground: Colors.cardBackgroundColor,
+              textSectionTitleColor: '#b6c1cd',
+              todayTextColor: '#00adf5',
+              dayTextColor: '#000000ff',
+              textMonthFontSize: 24,
+              textMonthFontWeight: 600,
+              monthTextColor: '#000000ff',
+              selectedDayBackgroundColor: Colors.primary,
+              selectedDayTextColor: '#ffffff',
+              dotStyle: {
+                width: 6,
+                height: 6,
+                borderRadius: 3,
+              },
+            }}
+          />
+
+          <Text style={[Typography.heading16, { textAlign: 'center' }]}>
+            {new Date(selectedDate).toLocaleDateString('en', { weekday: 'short' })}, {formatDate(selectedDate)}
+          </Text>
+          <Text>
+            {dotNames.length > 0
+              ? dotNames.join(', ') + ` on ${selectedDate}`
+              : `No dots on ${selectedDate}`}
+          </Text>
+        </Card>
+
+        <TouchableOpacity
+          onPress={() => {
+            addDot(selectedDate, 'Biology');
+          }}
+          style={{ padding: 16, backgroundColor: Colors.primary, borderRadius: 8, marginTop: 16 }}
+        >
+          <Text>
+            Add Biology Dot on {selectedDate}
+          </Text>
+        </TouchableOpacity>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -143,10 +158,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     width: '100%',
   },
-  legend: {
-    marginTop: 8,
-    backgroundColor: "#b38989ff",
-  }
 })
 
 

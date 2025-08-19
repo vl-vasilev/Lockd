@@ -25,8 +25,8 @@ const styles = StyleSheet.create({
         paddingVertical: 8,
     },
     selectedCard: {
-        backgroundColor: Colors.backgroundPrimary,
-        borderColor: Colors.backgroundPrimary,
+        backgroundColor: Colors.primary,
+        borderColor: Colors.primary,
         borderWidth: 1,
         borderRadius: 12,
         paddingHorizontal: 12,

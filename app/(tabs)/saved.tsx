@@ -261,62 +261,67 @@ const INITIALSUBJECTDATA: SubjectData[] = [
 ]
 
 type Contact = {
+    role: string; // teacher / student
     name: string;
     contactInfo: string;
 }
 
-const TEACHERS: Contact[] = [
+
+const INITIALSCONTACTSDATA: Contact[] = [
     {
+        role: "teacher",
         name: "Mr. Vasilev",
         contactInfo: "v.vasilev@oakwoodschool.edu"
     },
     {
+        role: "teacher",
         name: "Ms. Chen",
         contactInfo: "+1-555-0123"
     },
     {
+        role: "teacher",
         name: "Dr. Rodriguez",
         contactInfo: "e.rodriguez@university.edu"
     },
     {
+        role: "teacher",
         name: "Mr. Thompson",
         contactInfo: "+1-555-0198"
     },
     {
+        role: "teacher",
         name: "Prof. Park",
         contactInfo: "@ProfParkMath"
-    }
-];
-
-const STUDENTS: Contact[] = [
+    },
     {
+        role: "student",
         name: "Alex Martinez",
         contactInfo: "@alex_mart99"
     },
     {
+        role: "student",
         name: "Emma Wilson",
         contactInfo: "emma.wilson23@gmail.com"
     },
     {
+        role: "student",
         name: "Jordan Taylor",
         contactInfo: "+1-555-0176"
     },
     {
+        role: "student",
         name: "Zoe Chen",
         contactInfo: "@zoechen_art"
     },
     {
+        role: "student",
         name: "Ryan Foster",
         contactInfo: "ryan.foster@student.edu"
     }
-];
-
-const FAVORITES: Contact[] = [
-    {
-        name: "Favorite",
-        contactInfo: "Favorite Contact Info"
-    }
 ]
+
+
+
 
 
 
@@ -325,7 +330,8 @@ export default function SavedScreen() {
     const [subjectData, setSubjectData] = useState<SubjectData[]>(INITIALSUBJECTDATA);
 
     const [searchQuery, setSearchQuery] = useState('');
-    const [selectedContactCategory, setSelectedContactCategory] = useState<Array<Contact>>(STUDENTS);
+    const [selectedContactCategory, setSelectedContactCategory] = useState<string>("students");
+    const [contacts, setContacts] = useState<Contact[]>(INITIALSCONTACTSDATA);
 
     const selectedDayData = subjectData.find(day => day.id === selectedDayId);
     const subjectsToRender = selectedDayData ? selectedDayData.subjects : [];
@@ -351,8 +357,31 @@ export default function SavedScreen() {
         });
     }
 
-    function renderContacts(contacts: Array<Contact>) {
-        return contacts.map((item, index) => {
+    function addContact() {
+        setContacts(prevContacts => [
+            ...prevContacts,
+            {
+                role: selectedContactCategory.slice(0, -1),
+                name: "New Contact", // get input from the user, this is temporary
+                contactInfo: "tempInfo@gmail.com"
+            }
+        ])
+    }
+
+    function renderContacts() {
+        const tempContacts = contacts.filter(contact => {
+            if (selectedContactCategory === "students") {
+                return contact.role === "student";
+            } else if (selectedContactCategory === "teachers") {
+                return contact.role === "teacher";
+            }
+            return true; // If no category is selected, show all contacts
+        })
+            .filter(contact => {
+                return contact.name.toLowerCase().includes(searchQuery.toLowerCase());
+            });
+
+        return tempContacts.map((item, index) => {
             return (
                 <React.Fragment key={index}>
                     <Contact
@@ -360,7 +389,7 @@ export default function SavedScreen() {
                         name={item.name}
                         contactInfo={item.contactInfo}
                     />
-                    {index < contacts.length - 1 && <Separator />}
+                    {index < tempContacts.length - 1 && <Separator />}
                 </React.Fragment>
             )
         })
@@ -370,16 +399,17 @@ export default function SavedScreen() {
     return (
         <SafeAreaProvider>
             <SafeAreaView style={PageStyle}>
+                <ProfileSection />
                 <ScrollView
                     showsVerticalScrollIndicator={false}
+                    style = {{paddingHorizontal: 16}}
                 >
-                    <ProfileSection />
 
 
-                    <AboveCardText 
-                    title="Timetable"
-                    buttonText="Class"
-                    onButtonPress={addClass}
+                    <AboveCardText
+                        title="Timetable"
+                        buttonText="Class"
+                        onButtonPress={addClass}
                     />
                     <View style={styles.timetableSection}>
                         <View style={styles.daysContainer}>
@@ -392,8 +422,14 @@ export default function SavedScreen() {
                                         setSelectedId={setSelectedDayId}
                                         itemId={item.id}
                                     >
-                                        <Text style={[Typography.heading18, styles.dateText]}> {item.date} </Text>
-                                        <Text style={[Typography.secondary14, styles.dayText]}> {item.day} </Text>
+                                        <Text
+                                            style={[Typography.heading18, styles.dateText, isSelected && Typography.selectedText]}>
+                                            {item.date}
+                                        </Text>
+                                        <Text
+                                            style={[Typography.secondary14, styles.dayText, isSelected && Typography.selectedText]}>
+                                            {item.day}
+                                        </Text>
                                     </DayCard>
                                 );
                             })}
@@ -409,14 +445,14 @@ export default function SavedScreen() {
                                         end={item.end}
                                     />
                                 )
-
                             })}
                         </Card>
                     </View>
 
                     <AboveCardText
-                    title="Contacts"
-                    buttonText="Contact"
+                        title="Contacts"
+                        buttonText="Contact"
+                        onButtonPress={addContact}
                     />
 
                     <View style={styles.searchContainer}>
@@ -431,40 +467,44 @@ export default function SavedScreen() {
 
                     <View style={styles.contactsCategoriesContainer}>
                         <TouchableOpacity
-                            onPress={() => setSelectedContactCategory(STUDENTS)}
+                            onPress={() => setSelectedContactCategory("students")}
                             style={styles.contactCategory}
                         >
                             <Card
-                                isSelected={selectedContactCategory === STUDENTS}
+                                isSelected={selectedContactCategory === "students"}
                             >
-                                <Text style={{ textAlign: "center" }}> Students </Text>
+                                <Text
+                                    style={[
+                                        { textAlign: "center" },
+                                        Typography.default16,
+                                        selectedContactCategory === "students" && Typography.selectedText 
+                                    ]}
+                                >
+                                    Students
+                                </Text>
                             </Card>
                         </TouchableOpacity>
                         <TouchableOpacity
-                            onPress={() => setSelectedContactCategory(TEACHERS)}
+                            onPress={() => setSelectedContactCategory("teachers")}
                             style={styles.contactCategory}
                         >
                             <Card
-                                isSelected={selectedContactCategory === TEACHERS}
+                                isSelected={selectedContactCategory === "teachers"}
                             >
-                                <Text style={{ textAlign: "center" }}> Teachers </Text>
-                            </Card>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            onPress={() => setSelectedContactCategory(FAVORITES)}
-                            style={styles.contactCategory}
-                        >
-                            <Card
-                                isSelected={selectedContactCategory === FAVORITES}
-                            >
-                                <Text style={{ textAlign: "center" }}> Favorites </Text>
+                                <Text
+                                    style={[
+                                        { textAlign: "center" },
+                                        Typography.default16,
+                                        selectedContactCategory === "teachers" && Typography.selectedText 
+                                    ]}
+                                >
+                                    Teachers
+                                </Text>
                             </Card>
                         </TouchableOpacity>
                     </View>
                     <Card style={styles.contactsContainer}>
-                        {
-                            renderContacts(selectedContactCategory)
-                        }
+                        {renderContacts()}
                     </Card>
                 </ScrollView>
             </SafeAreaView>
@@ -519,6 +559,7 @@ const styles = StyleSheet.create({
     searchInput: {
         color: "black",
         paddingHorizontal: 4,
+        width: "100%",
     },
     contactsCategoriesContainer: {
         marginTop: 16,

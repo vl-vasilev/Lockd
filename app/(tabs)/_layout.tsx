@@ -11,7 +11,7 @@ export default function TabsLayout() {
         borderTopWidth: 1,
         paddingTop: 4,
       },
-      headerShown: false, 
+      headerShown: false,
     }}>
       <Tabs.Screen name="index" options={{
         title: "Home",
@@ -43,6 +43,17 @@ export default function TabsLayout() {
       <Tabs.Screen name="notes" options={{
         title: "Notes",
         tabBarIcon: ({color}) => <Octicons name = "paperclip" size = {24} color={color}/>
+      }} />
+
+      <Tabs.Screen name="profile" options={{
+        title: "Profile",
+        tabBarIcon: ({ color, focused }) => {
+          return focused ? (
+            <Octicons name="person-fill" size={24} color={color} />
+          ) : (
+            <Octicons name="person" size={24} color={color} />
+          )
+        },
       }} />
     </Tabs>
   );

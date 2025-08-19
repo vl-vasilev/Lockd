@@ -1,6 +1,11 @@
 import Colors from "./Colors";
 
 const Typography = {
+    heading20: {
+        fontSize: 20,
+        fontWeight: "bold" as "bold",
+        color: "hsl(0, 0%, 0%)",
+    },
     heading18: {
         fontSize: 18,
         fontWeight: "bold" as "bold",
@@ -31,6 +36,9 @@ const Typography = {
         fontWeight: "normal" as "normal",
         color: Colors.primary
     },
+    selectedText: {
+        color: "hsl(0, 100%, 100%)"
+    }
 };
 
 export default Typography;

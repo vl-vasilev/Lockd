@@ -37,8 +37,8 @@ const styles = StyleSheet.create({
     },
     selectedCard: {
         flex: 1,
-        backgroundColor: Colors.backgroundPrimary,
-        borderColor: Colors.backgroundPrimary,
+        backgroundColor: Colors.primary,
+        borderColor: Colors.primary,
         borderWidth: 1,
         borderRadius: 12,
         flexDirection: "column",
@@ -46,5 +46,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         width: 60,
         padding: 4,
+        
     },
 });
