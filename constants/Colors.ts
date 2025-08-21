@@ -1,9 +1,9 @@
 const Colors = {
-    primary: "#1778E6",  
+    primary: "#1564BF",  
     cardBackgroundColor: "#fcfcfc", 
     cardStrokeColor: "#ededed",
 
-    screenBackgroundColor: "#ffffff",
+    screenBackgroundColor: "#ffffff", // eceff5?
 };
 
 export default Colors;

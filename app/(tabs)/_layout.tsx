@@ -24,8 +24,8 @@ export default function TabsLayout() {
         },
       }} />
 
-      <Tabs.Screen name="saved" options={{
-        title: "Saved",
+      <Tabs.Screen name="timetable" options={{
+        title: "Timetable",
         tabBarIcon: ({ color, focused }) => {
           return focused ? (
             <Octicons name="bookmark-filled" size={24} color={color} />

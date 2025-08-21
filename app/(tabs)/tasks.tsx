@@ -5,19 +5,20 @@ import ProfileSection from "@/components/ProfileSection";
 import PageStyle from "@/constants/PageStyle";
 import Typography from "@/constants/Typography";
 import { useState } from "react";
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-type Task = {
+type Activity = {
     title: string;
     date: string;
+    details: string;
     points: number;
 }
 
-const INITIALTASKS: Array<Task> = [
-    { title: "Task 1", date: "August 30th", points: 10 },
-    { title: "Task 2", date: "August 23th", points: 20 },
-    { title: "Task 3", date: "September 6th", points: 30 }
+const INITIALTASKS: Array<Activity> = [
+    { title: "Task 1", date: "August 30th", details: "These are some temporary details that i made up on the spot", points: 10 },
+    { title: "Task 2", date: "August 23th", details: "These are some temporary details that i made up on the spot", points: 20 },
+    { title: "Task 3", date: "September 6th", details: "These are some temporary details that i made up on the spot", points: 30 }
 ]
 
 
@@ -25,6 +26,34 @@ const INITIALTASKS: Array<Task> = [
 export default function SavedScreen() {
     const [selectedActivity, setSelectedActivity] = useState<string | null>("tasks");
     const [tasks, setTasks] = useState(INITIALTASKS);
+    const [tests, setTests] = useState<Array<Activity>>([]);
+
+    function renderActivities() {
+        const toRender = selectedActivity === "tasks" ? tasks : tests;
+        if (toRender.length === 0) {
+            return (
+                <Card>
+                    <Text style={[Typography.default16, { textAlign: "center", justifyContent: "center" }]}>
+                        You don't have any {selectedActivity} yet.
+                    </Text>
+                    <Image source={require('../../assets/images/empty.png')} style = {styles.emptyImage} />
+                </Card>
+            )
+
+        }
+        return toRender.map((item, index) => {
+            return (
+                <Activity
+                    key={index}
+                    title={item.title}
+                    date={item.date}
+                    details={item.details}
+                    points={item.points}
+                />
+            )
+        })
+
+    }
 
     function addActivity() {
         setTasks(prevTasks => [
@@ -32,6 +61,16 @@ export default function SavedScreen() {
             {
                 title: "New Task",
                 date: "September 10th",
+                details: "These are some temporary details that I made up on the spot",
+                points: 5
+            }
+        ])
+        setTests(prevTests => [
+            ...prevTests,
+            {
+                title: "New Task",
+                date: "September 10th",
+                details: "These are some temporary details that I made up on the spot",
                 points: 5
             }
         ])
@@ -90,20 +129,16 @@ export default function SavedScreen() {
 
                 </View>
 
-                <Card>
-                    {tasks.map((item, index) => {
-                        return (
-                            <Activity
-                                key={index}
-                                title={item.title}
-                                date={item.date}
-                                points={item.points}
-                            />
-                        )
-                    })}
-                </Card>
+                <View style={styles.activitiesContainer}>
+                    {renderActivities()}
+                </View>
 
+                <AboveCardText
+                    title="Completed"
+                />
+                <View>
 
+                </View>
             </ScrollView>
         </SafeAreaView>
     )
@@ -120,4 +155,14 @@ const styles = StyleSheet.create({
         alignSelf: "stretch",
         flex: 1,
     },
+    activitiesContainer: {
+        gap: 8,
+        marginBottom: 16,
+    },
+    emptyImage: {
+        width: 300,
+        height: 200,
+        alignSelf: "center",
+        marginTop: 16,
+    }
 })

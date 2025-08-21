@@ -1,16 +1,13 @@
 import AboveCardText from "@/components/AboveCardText";
-import Card from "@/components/Card";
 import Contact from "@/components/Contact";
 import DayCard from "@/components/DayCard";
 import ProfileSection from "@/components/ProfileSection";
-import Separator from "@/components/Separator";
 import Subject from "@/components/Subject";
 import Colors from "@/constants/Colors";
 import PageStyle from "@/constants/PageStyle";
 import Typography from "@/constants/Typography";
-import Octicons from "@react-native-vector-icons/octicons";
 import React, { useState } from "react";
-import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 
@@ -267,59 +264,6 @@ type Contact = {
 }
 
 
-const INITIALSCONTACTSDATA: Contact[] = [
-    {
-        role: "teacher",
-        name: "Mr. Vasilev",
-        contactInfo: "v.vasilev@oakwoodschool.edu"
-    },
-    {
-        role: "teacher",
-        name: "Ms. Chen",
-        contactInfo: "+1-555-0123"
-    },
-    {
-        role: "teacher",
-        name: "Dr. Rodriguez",
-        contactInfo: "e.rodriguez@university.edu"
-    },
-    {
-        role: "teacher",
-        name: "Mr. Thompson",
-        contactInfo: "+1-555-0198"
-    },
-    {
-        role: "teacher",
-        name: "Prof. Park",
-        contactInfo: "@ProfParkMath"
-    },
-    {
-        role: "student",
-        name: "Alex Martinez",
-        contactInfo: "@alex_mart99"
-    },
-    {
-        role: "student",
-        name: "Emma Wilson",
-        contactInfo: "emma.wilson23@gmail.com"
-    },
-    {
-        role: "student",
-        name: "Jordan Taylor",
-        contactInfo: "+1-555-0176"
-    },
-    {
-        role: "student",
-        name: "Zoe Chen",
-        contactInfo: "@zoechen_art"
-    },
-    {
-        role: "student",
-        name: "Ryan Foster",
-        contactInfo: "ryan.foster@student.edu"
-    }
-]
-
 
 
 
@@ -329,9 +273,6 @@ export default function SavedScreen() {
     const [selectedDayId, setSelectedDayId] = useState<string>("1");
     const [subjectData, setSubjectData] = useState<SubjectData[]>(INITIALSUBJECTDATA);
 
-    const [searchQuery, setSearchQuery] = useState('');
-    const [selectedContactCategory, setSelectedContactCategory] = useState<string>("students");
-    const [contacts, setContacts] = useState<Contact[]>(INITIALSCONTACTSDATA);
 
     const selectedDayData = subjectData.find(day => day.id === selectedDayId);
     const subjectsToRender = selectedDayData ? selectedDayData.subjects : [];
@@ -357,43 +298,6 @@ export default function SavedScreen() {
         });
     }
 
-    function addContact() {
-        setContacts(prevContacts => [
-            ...prevContacts,
-            {
-                role: selectedContactCategory.slice(0, -1),
-                name: "New Contact", // get input from the user, this is temporary
-                contactInfo: "tempInfo@gmail.com"
-            }
-        ])
-    }
-
-    function renderContacts() {
-        const tempContacts = contacts.filter(contact => {
-            if (selectedContactCategory === "students") {
-                return contact.role === "student";
-            } else if (selectedContactCategory === "teachers") {
-                return contact.role === "teacher";
-            }
-            return true; // If no category is selected, show all contacts
-        })
-            .filter(contact => {
-                return contact.name.toLowerCase().includes(searchQuery.toLowerCase());
-            });
-
-        return tempContacts.map((item, index) => {
-            return (
-                <React.Fragment key={index}>
-                    <Contact
-                        key={index}
-                        name={item.name}
-                        contactInfo={item.contactInfo}
-                    />
-                    {index < tempContacts.length - 1 && <Separator />}
-                </React.Fragment>
-            )
-        })
-    }
 
 
     return (
@@ -423,7 +327,7 @@ export default function SavedScreen() {
                                         itemId={item.id}
                                     >
                                         <Text
-                                            style={[Typography.heading18, styles.dateText, isSelected && Typography.selectedText]}>
+                                            style={[Typography.heading20, styles.dateText, isSelected && Typography.selectedText]}>
                                             {item.date}
                                         </Text>
                                         <Text
@@ -435,77 +339,21 @@ export default function SavedScreen() {
                             })}
                         </View>
 
-                        <Card style={styles.allSubjects}>
+                        <View style={styles.allSubjects}>
                             {subjectsToRender.map((item, index) => {
                                 return (
                                     <Subject
                                         key={`${selectedDayId}-${index}`}
-                                        name={item.name}
+                                        subject={item.name}
                                         start={item.start}
                                         end={item.end}
                                     />
                                 )
                             })}
-                        </Card>
+                        </View>
                     </View>
 
-                    <AboveCardText
-                        title="Contacts"
-                        buttonText="Contact"
-                        onButtonPress={addContact}
-                    />
-
-                    <View style={styles.searchContainer}>
-                        <Octicons name="search" size={16} />
-                        <TextInput
-                            style={styles.searchInput}
-                            placeholder="Search contacts..."
-                            value={searchQuery}
-                            onChangeText={setSearchQuery}
-                        />
-                    </View>
-
-                    <View style={styles.contactsCategoriesContainer}>
-                        <TouchableOpacity
-                            onPress={() => setSelectedContactCategory("students")}
-                            style={styles.contactCategory}
-                        >
-                            <Card
-                                isSelected={selectedContactCategory === "students"}
-                            >
-                                <Text
-                                    style={[
-                                        { textAlign: "center" },
-                                        Typography.default16,
-                                        selectedContactCategory === "students" && Typography.selectedText 
-                                    ]}
-                                >
-                                    Students
-                                </Text>
-                            </Card>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            onPress={() => setSelectedContactCategory("teachers")}
-                            style={styles.contactCategory}
-                        >
-                            <Card
-                                isSelected={selectedContactCategory === "teachers"}
-                            >
-                                <Text
-                                    style={[
-                                        { textAlign: "center" },
-                                        Typography.default16,
-                                        selectedContactCategory === "teachers" && Typography.selectedText 
-                                    ]}
-                                >
-                                    Teachers
-                                </Text>
-                            </Card>
-                        </TouchableOpacity>
-                    </View>
-                    <Card style={styles.contactsContainer}>
-                        {renderContacts()}
-                    </Card>
+                    
                 </ScrollView>
             </SafeAreaView>
         </SafeAreaProvider>
@@ -541,7 +389,7 @@ const styles = StyleSheet.create({
     },
     allSubjects: {
         flexDirection: "column",
-        gap: 4,
+        gap: 8,
     },
 
     searchContainer: {

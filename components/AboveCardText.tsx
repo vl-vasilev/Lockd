@@ -4,19 +4,21 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 interface AboveCardTextProps {
     title: string,
-    buttonText: string,
+    buttonText?: string,
     onButtonPress?: () => void;
 }
 
-export default function AboveCardText({title, buttonText, onButtonPress}: AboveCardTextProps) {
+export default function AboveCardText({ title, buttonText, onButtonPress }: AboveCardTextProps) {
     return (
         <View style={styles.aboveCardText}>
             <Text style={[Typography.heading18]}> {title} </Text>
-            <TouchableOpacity
-                onPress={onButtonPress}
-            >
-                <Text style={[Typography.cardSpecificText]}> + Add {buttonText} </Text>
-            </TouchableOpacity>
+            {buttonText &&
+                <TouchableOpacity
+                    onPress={onButtonPress}
+                >
+                    <Text style={[Typography.cardSpecificText]}> + Add {buttonText} </Text>
+                </TouchableOpacity>
+            }
         </View>
     )
 }
