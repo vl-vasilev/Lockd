@@ -1,6 +1,7 @@
 import AboveCardText from "@/components/AboveCardText";
 import Activity from "@/components/Activity";
 import Card from "@/components/Card";
+import Fab from "@/components/Fab";
 import ProfileSection from "@/components/ProfileSection";
 import PageStyle from "@/constants/PageStyle";
 import Typography from "@/constants/Typography";
@@ -78,9 +79,9 @@ export default function SavedScreen() {
 
     return (
         <SafeAreaProvider>
-
-            <SafeAreaView style={PageStyle}>
+            <SafeAreaView style={[PageStyle, { position: 'relative' }]}>
                 <ProfileSection />
+                <Fab />
                 <ScrollView
                     showsVerticalScrollIndicator={false}
                     style={{ paddingHorizontal: 16 }}

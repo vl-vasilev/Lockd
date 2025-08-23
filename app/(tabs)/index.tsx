@@ -1,4 +1,5 @@
 import Card from "@/components/Card";
+import Fab from "@/components/Fab";
 import ProfileSection from "@/components/ProfileSection";
 import Colors from "@/constants/Colors";
 import PageStyle from "@/constants/PageStyle";
@@ -90,8 +91,9 @@ export default function Index() {
 
 
   return (
-    <SafeAreaView style={PageStyle}>
+    <SafeAreaView style={[PageStyle, { position: 'relative' }]}>
       <ProfileSection />
+      <Fab />
       <ScrollView
         showsVerticalScrollIndicator={false}
         style={{ paddingHorizontal: 16 }}

@@ -1,5 +1,6 @@
 import AboveCardText from "@/components/AboveCardText";
 import Card from "@/components/Card";
+import Fab from "@/components/Fab";
 import Note from "@/components/Note";
 import ProfileSection from "@/components/ProfileSection";
 import Colors from "@/constants/Colors";
@@ -99,9 +100,10 @@ export default function NotesScreen() {
 
     const filteredNotes = notes.filter(note => {
         // filter by search
-        const matchesSearch = note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                              note.content.toLowerCase().includes(searchQuery.toLowerCase());
-        
+        const matchesSearch =
+            note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            note.content.toLowerCase().includes(searchQuery.toLowerCase());
+
         // filter by category
         let matchesCategory = true;
         if (selectedCategory === "favorites") {
@@ -110,7 +112,7 @@ export default function NotesScreen() {
             matchesCategory = note.isLocked;
         }
         // "all" shows everything so matchesCategory stays true
-        
+
         return matchesSearch && matchesCategory;
     });
 
@@ -119,8 +121,9 @@ export default function NotesScreen() {
 
     return (
         <SafeAreaProvider>
-            <SafeAreaView style={PageStyle}>
+            <SafeAreaView style={[PageStyle, { position: 'relative' }]}>
                 <ProfileSection />
+                <Fab />
                 <ScrollView
                     showsVerticalScrollIndicator={false}
                     style={{ paddingHorizontal: 16 }}
@@ -204,7 +207,7 @@ export default function NotesScreen() {
 
                     <View style={styles.notesContainer}>
                         {filteredNotes.map((item) => (
-                            <Note 
+                            <Note
                                 key={item.id}
                                 id={item.id}
                                 title={item.title}

@@ -1,6 +1,7 @@
 import AboveCardText from "@/components/AboveCardText";
 import Contact from "@/components/Contact";
 import DayCard from "@/components/DayCard";
+import Fab from "@/components/Fab";
 import ProfileSection from "@/components/ProfileSection";
 import Subject from "@/components/Subject";
 import Colors from "@/constants/Colors";
@@ -302,11 +303,12 @@ export default function SavedScreen() {
 
     return (
         <SafeAreaProvider>
-            <SafeAreaView style={PageStyle}>
+            <SafeAreaView style={[PageStyle, { position: 'relative' }]}>
                 <ProfileSection />
+                <Fab />
                 <ScrollView
                     showsVerticalScrollIndicator={false}
-                    style = {{paddingHorizontal: 16}}
+                    style={{ paddingHorizontal: 16 }}
                 >
 
 
@@ -353,7 +355,7 @@ export default function SavedScreen() {
                         </View>
                     </View>
 
-                    
+
                 </ScrollView>
             </SafeAreaView>
         </SafeAreaProvider>

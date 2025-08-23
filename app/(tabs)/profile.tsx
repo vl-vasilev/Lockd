@@ -8,7 +8,7 @@ export default function ProfileScreen() {
 
 
     return (
-        <SafeAreaView style={PageStyle}>
+    <SafeAreaView style={[PageStyle, { position: 'relative' }]}>
             <ScrollView
                 showsVerticalScrollIndicator={false}
                 style={{ paddingHorizontal: 16 }}
