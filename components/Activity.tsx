@@ -23,7 +23,7 @@ export default function Activity({ title, date, points, details }: ActivityProps
                         <Text style={Typography.heading16}>{title}</Text>
                         <View style={styles.dateContainer}>
                             <Octicons name="calendar" size={16} color={"gray"} />
-                            <Text style={Typography.default16}> 14 Jul </Text>
+                            <Text style={Typography.default16}> {date}</Text>
                         </View>
                     </View>
                     <View style={styles.detailsContainer}>
@@ -48,7 +48,7 @@ export default function Activity({ title, date, points, details }: ActivityProps
 
             <BouncyCheckbox
                 size={24}
-                fillColor={Colors.primary}
+                fillColor={Colors.primary500}
                 disableText={true}
                 onPress={() => setIsChecked(!isChecked)}
             />
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
         borderRightWidth: 8,
         borderWidth: 1,
 
-        borderRightColor: Colors.primary,
+        borderRightColor: Colors.primary500,
         borderLeftColor: Colors.cardStrokeColor,
         borderTopColor: Colors.cardStrokeColor,
         borderBottomColor: Colors.cardStrokeColor,

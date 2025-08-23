@@ -11,9 +11,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 function formatDate(dateString: string): string {
   const date = new Date(dateString);
   const day = date.getDate();
-  const suffix = day > 3 && day < 21 ? 'th' : ['th', 'st', 'nd', 'rd'][day % 10] || 'th';
-  const month = date.toLocaleDateString('en', { month: 'long' });
-  return `${day}${suffix} ${month}`;
+  const month = date.toLocaleDateString('en', { month: 'short' });
+  return `${day} ${month}`;
 };
 
 const SUBJECTDOTCOLORS = {
@@ -42,7 +41,7 @@ export default function Index() {
   const [markedDates, setMarkedDates] = useState<MarkedDatesType>({
     '2025-08-09': {
       dots: [
-        { name: 'Biology', color: SUBJECTDOTCOLORS.biology },
+        { name: 'Biology', color: SUBJECTDOTCOLORS.biology, },
         { name: 'Physics', color: SUBJECTDOTCOLORS.physics },
       ]
     },
@@ -73,16 +72,15 @@ export default function Index() {
         ]
       },
     }))
-
   }
 
   const finalMarkedDates = {
     ...markedDates,
     ...(selectedDate && {
       [selectedDate]: {
-        ...markedDates[selectedDate], // Preserve existing dots and other properties
+        ...markedDates[selectedDate],
         selected: true,
-        selectedColor: Colors.primary,
+        selectedColor: Colors.primary500,
         selectedTextColor: '#ffffff',
       }
     })
@@ -109,14 +107,14 @@ export default function Index() {
 
             style={styles.calendar}
             theme={{
-              calendarBackground: Colors.cardBackgroundColor,
+              backgroundColor: Colors.cardBackgroundColor,
               textSectionTitleColor: '#b6c1cd',
               todayTextColor: '#00adf5',
               dayTextColor: '#000000ff',
               textMonthFontSize: 24,
               textMonthFontWeight: 600,
               monthTextColor: '#000000ff',
-              selectedDayBackgroundColor: Colors.primary,
+              selectedDayBackgroundColor: Colors.primary500,
               selectedDayTextColor: '#ffffff',
               dotStyle: {
                 width: 6,
@@ -140,7 +138,7 @@ export default function Index() {
           onPress={() => {
             addDot(selectedDate, 'Biology');
           }}
-          style={{ padding: 16, backgroundColor: Colors.primary, borderRadius: 8, marginTop: 16 }}
+          style={{ padding: 16, backgroundColor: Colors.primary500, borderRadius: 8, marginTop: 16 }}
         >
           <Text>
             Add Biology Dot on {selectedDate}
@@ -153,9 +151,6 @@ export default function Index() {
 
 const styles = StyleSheet.create({
   calendar: {
-    borderColor: "#fff",
-    borderWidth: 1,
-    borderRadius: 12,
     width: '100%',
   },
 })

@@ -37,8 +37,8 @@ const styles = StyleSheet.create({
     },
     selectedCard: {
         flex: 1,
-        backgroundColor: Colors.primary,
-        borderColor: Colors.primary,
+        backgroundColor: Colors.primary500,
+        borderColor: Colors.primary500,
         borderWidth: 1,
         borderRadius: 12,
         flexDirection: "column",

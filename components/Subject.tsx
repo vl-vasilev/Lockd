@@ -48,6 +48,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         position: "relative",
         overflow: "hidden",
+        borderRadius: 8,
+        borderTopLeftRadius: 0,
     },
     leftSide: {
         flexDirection: "column",
@@ -55,6 +57,7 @@ const styles = StyleSheet.create({
     },
     subjectAndRoom: {
         flexDirection: "row",
+        alignItems: "baseline",
         gap: 16,
     },
     roomContainer: {
@@ -68,7 +71,7 @@ const styles = StyleSheet.create({
         left: -14,
         width: 26,
         height: 26,
-        backgroundColor: Colors.primary,
+        backgroundColor: Colors.primary500,
         transform: [{ rotate: '45deg' }],
     },
 })

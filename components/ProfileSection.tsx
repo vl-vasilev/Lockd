@@ -30,7 +30,7 @@ export default function ProfileCard() {
 
 const styles = StyleSheet.create({
     card: {
-        backgroundColor: Colors.primary,
+        backgroundColor: Colors.primary500,
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",

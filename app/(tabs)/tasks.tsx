@@ -6,7 +6,7 @@ import PageStyle from "@/constants/PageStyle";
 import Typography from "@/constants/Typography";
 import { useState } from "react";
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 type Activity = {
     title: string;
@@ -16,9 +16,9 @@ type Activity = {
 }
 
 const INITIALTASKS: Array<Activity> = [
-    { title: "Task 1", date: "August 30th", details: "These are some temporary details that i made up on the spot", points: 10 },
-    { title: "Task 2", date: "August 23th", details: "These are some temporary details that i made up on the spot", points: 20 },
-    { title: "Task 3", date: "September 6th", details: "These are some temporary details that i made up on the spot", points: 30 }
+    { title: "Task 1", date: "30 Aug", details: "These are some temporary details that i made up on the spot", points: 10 },
+    { title: "Task 2", date: "23 Sep", details: "These are some temporary details that i made up on the spot", points: 20 },
+    { title: "Task 3", date: "25 Sep", details: "These are some temporary details that i made up on the spot", points: 30 }
 ]
 
 
@@ -36,7 +36,7 @@ export default function SavedScreen() {
                     <Text style={[Typography.default16, { textAlign: "center", justifyContent: "center" }]}>
                         You don't have any {selectedActivity} yet.
                     </Text>
-                    <Image source={require('../../assets/images/empty.png')} style = {styles.emptyImage} />
+                    <Image source={require('../../assets/images/empty.png')} style={styles.emptyImage} />
                 </Card>
             )
 
@@ -60,7 +60,7 @@ export default function SavedScreen() {
             ...prevTasks,
             {
                 title: "New Task",
-                date: "September 10th",
+                date: "6 Sep",
                 details: "These are some temporary details that I made up on the spot",
                 points: 5
             }
@@ -69,7 +69,7 @@ export default function SavedScreen() {
             ...prevTests,
             {
                 title: "New Task",
-                date: "September 10th",
+                date: "6 Sep",
                 details: "These are some temporary details that I made up on the spot",
                 points: 5
             }
@@ -77,70 +77,70 @@ export default function SavedScreen() {
     }
 
     return (
-        <SafeAreaView style={PageStyle}>
-            <ProfileSection />
-            <ScrollView
-                showsVerticalScrollIndicator={false}
-                style={{ paddingHorizontal: 16 }}
-            >
-                <AboveCardText
-                    title="ToDo List"
-                    buttonText="New"
-                    onButtonPress={() => addActivity()}
-                />
-                <View style={styles.activitiesCategoriesContainer}>
-                    <TouchableOpacity
-                        style={[styles.activityCategory, { flexGrow: 2 }]}
-                        onPress={() => setSelectedActivity("tasks")}
-                    >
-                        <Card
-                            isSelected={selectedActivity === "tasks"}
+        <SafeAreaProvider>
+
+            <SafeAreaView style={PageStyle}>
+                <ProfileSection />
+                <ScrollView
+                    showsVerticalScrollIndicator={false}
+                    style={{ paddingHorizontal: 16 }}
+                >
+                    <AboveCardText
+                        title="ToDo List"
+                        buttonText="New"
+                        onButtonPress={() => addActivity()}
+                    />
+                    <View style={styles.activitiesCategoriesContainer}>
+                        <TouchableOpacity
+                            style={[styles.activityCategory, { flexGrow: 2 }]}
+                            onPress={() => setSelectedActivity("tasks")}
                         >
-                            <Text
-                                style={[
-                                    { textAlign: "center" },
-                                    Typography.default16,
-                                    selectedActivity === "tasks" && Typography.selectedText
-                                ]}
+                            <Card
+                                isSelected={selectedActivity === "tasks"}
                             >
-                                Tasks
-                            </Text>
-                        </Card>
-                    </TouchableOpacity>
+                                <Text
+                                    style={[
+                                        { textAlign: "center" },
+                                        Typography.default16,
+                                        selectedActivity === "tasks" && Typography.selectedText
+                                    ]}
+                                >
+                                    Tasks
+                                </Text>
+                            </Card>
+                        </TouchableOpacity>
 
-                    <TouchableOpacity
-                        style={[styles.activityCategory, { flexGrow: 2 }]}
-                        onPress={() => setSelectedActivity("tests")}
-                    >
-                        <Card
-                            isSelected={selectedActivity === "tests"}
+                        <TouchableOpacity
+                            style={[styles.activityCategory, { flexGrow: 2 }]}
+                            onPress={() => setSelectedActivity("tests")}
                         >
-                            <Text
-                                style={[
-                                    { textAlign: "center" },
-                                    Typography.default16,
-                                    selectedActivity === "tests" && Typography.selectedText
-                                ]}
+                            <Card
+                                isSelected={selectedActivity === "tests"}
                             >
-                                Tests
-                            </Text>
-                        </Card>
-                    </TouchableOpacity>
+                                <Text
+                                    style={[
+                                        { textAlign: "center" },
+                                        Typography.default16,
+                                        selectedActivity === "tests" && Typography.selectedText
+                                    ]}
+                                >
+                                    Tests
+                                </Text>
+                            </Card>
+                        </TouchableOpacity>
 
-                </View>
+                    </View>
 
-                <View style={styles.activitiesContainer}>
-                    {renderActivities()}
-                </View>
+                    <View style={styles.activitiesContainer}>
+                        {renderActivities()}
+                    </View>
 
-                <AboveCardText
-                    title="Completed"
-                />
-                <View>
-
-                </View>
-            </ScrollView>
-        </SafeAreaView>
+                    <AboveCardText
+                        title="Completed"
+                    />
+                </ScrollView>
+            </SafeAreaView>
+        </SafeAreaProvider>
     )
 }
 

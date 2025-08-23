@@ -28,6 +28,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         marginBottom: 8,
+        alignItems: "baseline",
     },
 
     searchContainer: {

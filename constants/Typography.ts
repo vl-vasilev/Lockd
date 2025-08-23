@@ -34,7 +34,7 @@ const Typography = {
     cardSpecificText: {
         fontSize: 16,
         fontWeight: "normal" as "normal",
-        color: Colors.primary
+        color: Colors.primary500
     },
     selectedText: {
         color: "hsl(0, 100%, 100%)"

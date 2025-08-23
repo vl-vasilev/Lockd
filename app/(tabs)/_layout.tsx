@@ -5,7 +5,7 @@ import { Tabs } from "expo-router";
 export default function TabsLayout() {
   return (
     <Tabs screenOptions={{
-      tabBarActiveTintColor: Colors.primary,
+      tabBarActiveTintColor: Colors.primary500,
       tabBarStyle: {
         elevation: 0,
         borderTopWidth: 1,
@@ -17,9 +17,9 @@ export default function TabsLayout() {
         title: "Home",
         tabBarIcon: ({ color, focused }) => {
           return focused ? (
-            <Octicons name="home-fill" size={24} color={color} />
+            <Octicons name="calendar" size={24} color={color} />
           ) : (
-            <Octicons name="home" size={24} color={color} />
+            <Octicons name="calendar" size={24} color={color} />
           )
         },
       }} />
