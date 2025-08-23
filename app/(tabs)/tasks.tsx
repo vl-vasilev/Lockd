@@ -10,16 +10,39 @@ import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "rea
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 type Activity = {
+    id: number;
     title: string;
     date: string;
     details: string;
     points: number;
+    completed: boolean;
 }
 
 const INITIALTASKS: Array<Activity> = [
-    { title: "Task 1", date: "30 Aug", details: "These are some temporary details that i made up on the spot", points: 10 },
-    { title: "Task 2", date: "23 Sep", details: "These are some temporary details that i made up on the spot", points: 20 },
-    { title: "Task 3", date: "25 Sep", details: "These are some temporary details that i made up on the spot", points: 30 }
+    // {
+    //     id: 1,
+    //     title: "Task 1",
+    //     date: "30 Aug",
+    //     details: "These are some temporary details that i made up on the spot",
+    //     points: 10,
+    //     completed: false,
+    // },
+    // {
+    //     id: 2,
+    //     title: "Task 2",
+    //     date: "23 Sep",
+    //     details: "These are some temporary details that i made up on the spot",
+    //     points: 20,
+    //     completed: false,
+    // },
+    // {
+    //     id: 3,
+    //     title: "Task 3",
+    //     date: "25 Sep",
+    //     details: "These are some temporary details that i made up on the spot",
+    //     points: 30,
+    //     completed: false,
+    // }
 ]
 
 
@@ -28,6 +51,23 @@ export default function SavedScreen() {
     const [selectedActivity, setSelectedActivity] = useState<string | null>("tasks");
     const [tasks, setTasks] = useState(INITIALTASKS);
     const [tests, setTests] = useState<Array<Activity>>([]);
+
+    function toggleCompleted(id: number) {
+        if (selectedActivity === "tasks") {
+            setTasks(prevTasks =>
+                prevTasks.map(task =>
+                    task.id === id ? { ...task, completed: !task.completed } : task
+                )
+            );
+        }
+        else {
+            setTests(prevTests =>
+                prevTests.map(test =>
+                    test.id === id ? { ...test, completed: !test.completed } : test
+                )
+            );
+        }
+    };
 
     function renderActivities() {
         const toRender = selectedActivity === "tasks" ? tasks : tests;
@@ -42,39 +82,71 @@ export default function SavedScreen() {
             )
 
         }
-        return toRender.map((item, index) => {
-            return (
-                <Activity
-                    key={index}
-                    title={item.title}
-                    date={item.date}
-                    details={item.details}
-                    points={item.points}
-                />
-            )
-        })
+        return toRender
+            .filter(act => !act.completed)
+            .map((item) => {
+                return (
+                    <Activity
+                        id={item.id}
+                        key={item.id}
+                        title={item.title}
+                        date={item.date}
+                        details={item.details}
+                        points={item.points}
+                        completed={item.completed}
+                        toggleCompleted={toggleCompleted}
+                    />
+                )
+            })
 
     }
 
+    function renderCompleted() {
+        const toRender = selectedActivity === "tasks" ? tasks : tests;
+        if (toRender.length === 0) {
+            return (
+                <Card>
+                    <Text style={[Typography.default16, { textAlign: "center", justifyContent: "center" }]}>
+                        You haven't completed any {selectedActivity} yet.
+                    </Text>
+                    <Image source={require('../../assets/images/empty.png')} style={styles.emptyImage} />
+                </Card>
+            )
+
+        }
+        return toRender
+            .filter(act => act.completed)
+            .map((item) => {
+                return (
+                    <Activity
+                        id={item.id}
+                        key={item.id}
+                        title={item.title}
+                        date={item.date}
+                        details={item.details}
+                        points={item.points}
+                        completed={item.completed}
+                        toggleCompleted={toggleCompleted}
+                    />
+                )
+            })
+    }
+
     function addActivity() {
-        setTasks(prevTasks => [
-            ...prevTasks,
-            {
-                title: "New Task",
-                date: "6 Sep",
-                details: "These are some temporary details that I made up on the spot",
-                points: 5
-            }
-        ])
-        setTests(prevTests => [
-            ...prevTests,
-            {
-                title: "New Task",
-                date: "6 Sep",
-                details: "These are some temporary details that I made up on the spot",
-                points: 5
-            }
-        ])
+        const newActivity = {
+            id: Date.now(), // Simple way to generate unique IDs
+            title: "New Task",
+            date: "6 Sep",
+            details: "These are some temporary details that I made up on the spot",
+            points: 5,
+            completed: false,
+        };
+
+        if (selectedActivity === "tasks") {
+            setTasks(prevTasks => [...prevTasks, { ...newActivity, id: prevTasks.length > 0 ? Math.max(...prevTasks.map(n => n.id)) + 1 : 1 }]);
+        } else {
+            setTests(prevTests => [...prevTests, { ...newActivity, id: prevTests.length > 0 ? Math.max(...prevTests.map(n => n.id)) + 1 : 1 }]);
+        }
     }
 
     return (
@@ -139,6 +211,10 @@ export default function SavedScreen() {
                     <AboveCardText
                         title="Completed"
                     />
+
+                    <View style={styles.activitiesContainer}>
+                        {renderCompleted()}
+                    </View>
                 </ScrollView>
             </SafeAreaView>
         </SafeAreaProvider>

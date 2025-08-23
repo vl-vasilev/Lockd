@@ -1,22 +1,23 @@
 import Colors from "@/constants/Colors";
 import Typography from "@/constants/Typography";
 import Octicons from "@react-native-vector-icons/octicons";
-import { useState } from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 
 interface ActivityProps {
+    id: number;
     title: string;
     date: string;
     details: string;
     points: number;
+    completed: boolean;
+    toggleCompleted: (id: number) => void;
 }
 
-export default function Activity({ title, date, points, details }: ActivityProps) {
-    const [isChecked, setIsChecked] = useState<boolean>(false);
+export default function Activity({id, title, date, points, details, completed, toggleCompleted }: ActivityProps) {
 
     return (
-        <View style={[styles.activityContainer, isChecked && { opacity: 0.5 }]}>
+        <View style={[styles.activityContainer, completed && { opacity: 0.5 }]}>
             <View style={styles.contentContainer}>
                 <View style={styles.textContainer}>
                     <View style={styles.mainTextContainer}>
@@ -33,7 +34,7 @@ export default function Activity({ title, date, points, details }: ActivityProps
                     </View>
                 </View>
 
-                {!isChecked &&
+                {!completed &&
                     <View style={styles.pointsAndMoreContainer}>
                         <View style={styles.currencyContainer}>
                             <Image source={require('../assets/images/coin.png')} style={styles.coin} />
@@ -50,7 +51,8 @@ export default function Activity({ title, date, points, details }: ActivityProps
                 size={24}
                 fillColor={Colors.primary500}
                 disableText={true}
-                onPress={() => setIsChecked(!isChecked)}
+                onPress={() => toggleCompleted(id)}
+                isChecked={completed}
             />
         </View>
     )
