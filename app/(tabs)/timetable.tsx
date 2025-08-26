@@ -1,4 +1,5 @@
 import AboveCardText from "@/components/AboveCardText";
+import AddSheet from "@/components/AddSheet";
 import Contact from "@/components/Contact";
 import DayCard from "@/components/DayCard";
 import Fab from "@/components/Fab";
@@ -7,7 +8,8 @@ import Subject from "@/components/Subject";
 import Colors from "@/constants/Colors";
 import PageStyle from "@/constants/PageStyle";
 import Typography from "@/constants/Typography";
-import React, { useState } from "react";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import React, { useRef, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
@@ -271,6 +273,9 @@ type Contact = {
 
 
 export default function SavedScreen() {
+    const bottomSheetRef = useRef<BottomSheetModal>(null);
+    const handlePresentPress = () => bottomSheetRef.current?.present();
+    
     const [selectedDayId, setSelectedDayId] = useState<string>("1");
     const [subjectData, setSubjectData] = useState<SubjectData[]>(INITIALSUBJECTDATA);
 
@@ -305,7 +310,8 @@ export default function SavedScreen() {
         <SafeAreaProvider>
             <SafeAreaView style={[PageStyle, { position: 'relative' }]}>
                 <ProfileSection />
-                <Fab />
+                <Fab openSheet={handlePresentPress} />
+                <AddSheet ref={bottomSheetRef} />
                 <ScrollView
                     showsVerticalScrollIndicator={false}
                     style={{ paddingHorizontal: 16 }}

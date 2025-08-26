@@ -2,12 +2,16 @@ import Colors from "@/constants/Colors";
 import Octicons from "@react-native-vector-icons/octicons";
 import { StyleSheet, TouchableOpacity } from "react-native";
 
-export default function Fab() {
+interface FabProps {
+    openSheet: () => void;
+}
+
+export default function Fab({openSheet} : FabProps) {
 
     return (
         <TouchableOpacity 
         style={styles.container}
-        onPress={() => console.log("pressed FAB")}
+        onPress={() => openSheet()}
         >
             <Octicons name="plus" size={24} color="white" />
         </TouchableOpacity>

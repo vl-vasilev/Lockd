@@ -4,17 +4,18 @@ import Octicons from "@react-native-vector-icons/octicons";
 import { Image, StyleSheet, Text, View } from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 
+
 interface ActivityProps {
     id: number;
     title: string;
     date: string;
-    details: string;
-    points: number;
+    body: string;
+    coins: number;
     completed: boolean;
     toggleCompleted: (id: number) => void;
 }
 
-export default function Activity({id, title, date, points, details, completed, toggleCompleted }: ActivityProps) {
+export default function Activity({id, title, date, coins, body, completed, toggleCompleted }: ActivityProps) {
 
     return (
         <View style={[styles.activityContainer, completed && { opacity: 0.5 }]}>
@@ -29,7 +30,7 @@ export default function Activity({id, title, date, points, details, completed, t
                     </View>
                     <View style={styles.detailsContainer}>
                         <Text style={Typography.secondary14}>
-                            {details}
+                            {body}
                         </Text>
                     </View>
                 </View>
@@ -38,7 +39,7 @@ export default function Activity({id, title, date, points, details, completed, t
                     <View style={styles.pointsAndMoreContainer}>
                         <View style={styles.currencyContainer}>
                             <Image source={require('../assets/images/coin.png')} style={styles.coin} />
-                            <Text style={styles.coinText}>{points}</Text>
+                            <Text style={styles.coinText}>{coins}</Text>
                         </View>
                         <View style={styles.xpContainer}>
                             <Text style={{ fontSize: 12, fontWeight: "normal", color: "hsl(0, 0%, 60%)" }}>+10XP</Text>

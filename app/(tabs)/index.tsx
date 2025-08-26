@@ -1,10 +1,12 @@
+import AddSheet from "@/components/AddSheet";
 import Card from "@/components/Card";
 import Fab from "@/components/Fab";
 import ProfileSection from "@/components/ProfileSection";
 import Colors from "@/constants/Colors";
 import PageStyle from "@/constants/PageStyle";
 import Typography from "@/constants/Typography";
-import { useState } from "react";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { useRef, useState } from "react";
 import { ScrollView, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { Calendar } from "react-native-calendars";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -33,7 +35,8 @@ type MarkedDatesType = {
 };
 
 export default function Index() {
-
+  const bottomSheetRef = useRef<BottomSheetModal>(null);
+  const handlePresentPress = () => bottomSheetRef.current?.present();
 
   const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
   const [selectedDate, setSelectedDate] = useState<string>(today);
@@ -93,7 +96,9 @@ export default function Index() {
   return (
     <SafeAreaView style={[PageStyle, { position: 'relative' }]}>
       <ProfileSection />
-      <Fab />
+      <Fab openSheet={handlePresentPress} />
+      <AddSheet ref={bottomSheetRef} />
+
       <ScrollView
         showsVerticalScrollIndicator={false}
         style={{ paddingHorizontal: 16 }}
@@ -106,6 +111,7 @@ export default function Index() {
             }}
             markedDates={finalMarkedDates}
             markingType="multi-dot"
+            showSixWeeks = {false}
 
             style={styles.calendar}
             theme={{

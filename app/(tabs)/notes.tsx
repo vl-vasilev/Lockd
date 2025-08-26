@@ -1,4 +1,5 @@
 import AboveCardText from "@/components/AboveCardText";
+import AddSheet from "@/components/AddSheet";
 import Card from "@/components/Card";
 import Fab from "@/components/Fab";
 import Note from "@/components/Note";
@@ -6,8 +7,9 @@ import ProfileSection from "@/components/ProfileSection";
 import Colors from "@/constants/Colors";
 import PageStyle from "@/constants/PageStyle";
 import Typography from "@/constants/Typography";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import Octicons from "@react-native-vector-icons/octicons";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
@@ -64,6 +66,9 @@ const data: NoteData[] = [
 ];
 
 export default function NotesScreen() {
+    const bottomSheetRef = useRef<BottomSheetModal>(null);
+    const handlePresentPress = () => bottomSheetRef.current?.present();
+
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategory, setSelectedCategory] = useState<string>("all");
     const [notes, setNotes] = useState<Array<NoteData>>(data);
@@ -123,7 +128,8 @@ export default function NotesScreen() {
         <SafeAreaProvider>
             <SafeAreaView style={[PageStyle, { position: 'relative' }]}>
                 <ProfileSection />
-                <Fab />
+                <Fab openSheet={handlePresentPress} />
+                <AddSheet ref={bottomSheetRef} defaultSelectedType="note"/>
                 <ScrollView
                     showsVerticalScrollIndicator={false}
                     style={{ paddingHorizontal: 16 }}

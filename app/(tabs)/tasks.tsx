@@ -1,159 +1,139 @@
 import AboveCardText from "@/components/AboveCardText";
 import Activity from "@/components/Activity";
+import AddSheet from "@/components/AddSheet";
 import Card from "@/components/Card";
 import Fab from "@/components/Fab";
 import ProfileSection from "@/components/ProfileSection";
 import PageStyle from "@/constants/PageStyle";
 import Typography from "@/constants/Typography";
-import { useState } from "react";
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { useEffect, useRef, useState } from "react";
+import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { config, database } from "../../lib/appwrite.js";
 
 type Activity = {
-    id: number;
+    id: string;
     title: string;
     date: string;
-    details: string;
-    points: number;
+    body: string;
+    coins: number;
     completed: boolean;
 }
 
-const INITIALTASKS: Array<Activity> = [
-    // {
-    //     id: 1,
-    //     title: "Task 1",
-    //     date: "30 Aug",
-    //     details: "These are some temporary details that i made up on the spot",
-    //     points: 10,
-    //     completed: false,
-    // },
-    // {
-    //     id: 2,
-    //     title: "Task 2",
-    //     date: "23 Sep",
-    //     details: "These are some temporary details that i made up on the spot",
-    //     points: 20,
-    //     completed: false,
-    // },
-    // {
-    //     id: 3,
-    //     title: "Task 3",
-    //     date: "25 Sep",
-    //     details: "These are some temporary details that i made up on the spot",
-    //     points: 30,
-    //     completed: false,
-    // }
-]
-
-
-
 export default function SavedScreen() {
-    const [selectedActivity, setSelectedActivity] = useState<string | null>("tasks");
-    const [tasks, setTasks] = useState(INITIALTASKS);
-    const [tests, setTests] = useState<Array<Activity>>([]);
 
-    function toggleCompleted(id: number) {
-        if (selectedActivity === "tasks") {
-            setTasks(prevTasks =>
-                prevTasks.map(task =>
-                    task.id === id ? { ...task, completed: !task.completed } : task
-                )
-            );
+    const bottomSheetRef = useRef<BottomSheetModal>(null);
+    const handlePresentPress = () => bottomSheetRef.current?.present();
+    const [error, setError] = useState<any>(null);
+
+    useEffect(() => {
+        init();
+    }, [])
+
+    async function init() {
+        getData();
+    }
+
+    async function getData() {
+        try {
+            const { documents, total } = await database.listDocuments(config.db, config.col.tasks);
+            setTasks(documents)
+            console.log(documents)
+        } catch (error) {
+            setError(error)
+            console.error(error)
         }
-        else {
-            setTests(prevTests =>
-                prevTests.map(test =>
-                    test.id === id ? { ...test, completed: !test.completed } : test
-                )
-            );
+    }
+
+    const [selectedActivity, setSelectedActivity] = useState<string | null>("tasks");
+    const [tasks, setTasks] = useState<Array<any>>([]);
+    const [tests, setTests] = useState<Array<any>>([]);
+
+    function toggleCompleted(item: Activity, documentId: string) {
+        setTasks(prevTasks =>
+            prevTasks.map(task =>
+                task.id === item.id ? { ...task, completed: !task.completed } : task
+            )
+        );
+
+        try {
+            database.updateDocument(config.db, config.col.tasks, documentId, { completed: !item.completed })
+        } catch (error) {
+            console.error(error)
         }
+
     };
 
-    function renderActivities() {
-        const toRender = selectedActivity === "tasks" ? tasks : tests;
-        if (toRender.length === 0) {
-            return (
-                <Card>
-                    <Text style={[Typography.default16, { textAlign: "center", justifyContent: "center" }]}>
-                        You don't have any {selectedActivity} yet.
-                    </Text>
-                    <Image source={require('../../assets/images/empty.png')} style={styles.emptyImage} />
-                </Card>
-            )
+    // function renderActivities() {
+    //     const toRender = selectedActivity === "tasks" ? tasks : tests;
+    //     if (toRender.length === 0) {
+    //         return (
+    //             <Card>
+    //                 <Text style={[Typography.default16, { textAlign: "center", justifyContent: "center" }]}>
+    //                     You don't have any {selectedActivity} yet.
+    //                 </Text>
+    //                 <Image source={require('../../assets/images/empty.png')} style={styles.emptyImage} />
+    //             </Card>
+    //         )
 
-        }
-        return toRender
-            .filter(act => !act.completed)
-            .map((item) => {
-                return (
-                    <Activity
-                        id={item.id}
-                        key={item.id}
-                        title={item.title}
-                        date={item.date}
-                        details={item.details}
-                        points={item.points}
-                        completed={item.completed}
-                        toggleCompleted={toggleCompleted}
-                    />
-                )
-            })
+    //     }
+    //     return toRender
+    //         .filter(act => !act.completed)
+    //         .map((item) => {
+    //             return (
+    //                 <Activity
+    //                     id={item.id}
+    //                     key={item.id}
+    //                     title={item.title}
+    //                     date={item.date}
+    //                     body={item.details}
+    //                     coins={item.coins}
+    //                     completed={item.completed}
+    //                     toggleCompleted={toggleCompleted}
+    //                 />
+    //             )
+    //         })
 
-    }
+    // }
 
-    function renderCompleted() {
-        const toRender = selectedActivity === "tasks" ? tasks : tests;
-        if (toRender.length === 0) {
-            return (
-                <Card>
-                    <Text style={[Typography.default16, { textAlign: "center", justifyContent: "center" }]}>
-                        You haven't completed any {selectedActivity} yet.
-                    </Text>
-                    <Image source={require('../../assets/images/empty.png')} style={styles.emptyImage} />
-                </Card>
-            )
+    // function renderCompleted() {
+    //     const toRender = selectedActivity === "tasks" ? tasks : tests;
+    //     if (toRender.length === 0) {
+    //         return (
+    //             <Card>
+    //                 <Text style={[Typography.default16, { textAlign: "center", justifyContent: "center" }]}>
+    //                     You haven't completed any {selectedActivity} yet.
+    //                 </Text>
+    //                 <Image source={require('../../assets/images/empty.png')} style={styles.emptyImage} />
+    //             </Card>
+    //         )
 
-        }
-        return toRender
-            .filter(act => act.completed)
-            .map((item) => {
-                return (
-                    <Activity
-                        id={item.id}
-                        key={item.id}
-                        title={item.title}
-                        date={item.date}
-                        details={item.details}
-                        points={item.points}
-                        completed={item.completed}
-                        toggleCompleted={toggleCompleted}
-                    />
-                )
-            })
-    }
-
-    function addActivity() {
-        const newActivity = {
-            id: Date.now(), // Simple way to generate unique IDs
-            title: "New Task",
-            date: "6 Sep",
-            details: "These are some temporary details that I made up on the spot",
-            points: 5,
-            completed: false,
-        };
-
-        if (selectedActivity === "tasks") {
-            setTasks(prevTasks => [...prevTasks, { ...newActivity, id: prevTasks.length > 0 ? Math.max(...prevTasks.map(n => n.id)) + 1 : 1 }]);
-        } else {
-            setTests(prevTests => [...prevTests, { ...newActivity, id: prevTests.length > 0 ? Math.max(...prevTests.map(n => n.id)) + 1 : 1 }]);
-        }
-    }
+    //     }
+    //     return toRender
+    //         .filter(act => act.completed)
+    //         .map((item) => {
+    //             return (
+    //                 <Activity
+    //                     id={item.id}
+    //                     key={item.id}
+    //                     title={item.title}
+    //                     date={item.date}
+    //                     body={item.details}
+    //                     coins={item.coins}
+    //                     completed={item.completed}
+    //                     toggleCompleted={toggleCompleted}
+    //                 />
+    //             )
+    //         })
+    // }
 
     return (
         <SafeAreaProvider>
             <SafeAreaView style={[PageStyle, { position: 'relative' }]}>
                 <ProfileSection />
-                <Fab />
+                <Fab openSheet={handlePresentPress} />
+                <AddSheet ref={bottomSheetRef} />
                 <ScrollView
                     showsVerticalScrollIndicator={false}
                     style={{ paddingHorizontal: 16 }}
@@ -161,7 +141,7 @@ export default function SavedScreen() {
                     <AboveCardText
                         title="ToDo List"
                         buttonText="New"
-                        onButtonPress={() => addActivity()}
+                        onButtonPress={() => handlePresentPress()}
                     />
                     <View style={styles.activitiesCategoriesContainer}>
                         <TouchableOpacity
@@ -205,7 +185,20 @@ export default function SavedScreen() {
                     </View>
 
                     <View style={styles.activitiesContainer}>
-                        {renderActivities()}
+                        <FlatList
+                            scrollEnabled={false}
+                            data={tasks}
+                            renderItem={({ item }) => <Activity
+                                key={item.$id}
+                                id={item.$id}
+                                title={item.title}
+                                date={item.date}
+                                body={item.body}
+                                coins={item.coins}
+                                completed={item.completed}
+                                toggleCompleted={() => toggleCompleted(item, item.$id)}
+                            />}
+                        />
                     </View>
 
                     <AboveCardText
@@ -213,7 +206,7 @@ export default function SavedScreen() {
                     />
 
                     <View style={styles.activitiesContainer}>
-                        {renderCompleted()}
+
                     </View>
                 </ScrollView>
             </SafeAreaView>
