@@ -1,4 +1,5 @@
 import Colors from "@/constants/Colors";
+import subjectColors from "@/constants/subjectColors";
 import Typography from "@/constants/Typography";
 import Octicons from "@react-native-vector-icons/octicons";
 import { Image, StyleSheet, Text, View } from "react-native";
@@ -13,12 +14,18 @@ interface ActivityProps {
     coins: number;
     completed: boolean;
     toggleCompleted: (id: number) => void;
+    subject: string;
 }
 
-export default function Activity({id, title, date, coins, body, completed, toggleCompleted }: ActivityProps) {
 
+
+export default function Activity({ id, title, date, coins, body, completed, toggleCompleted, subject }: ActivityProps) {
     return (
-        <View style={[styles.activityContainer, completed && { opacity: 0.5 }]}>
+        <View style={[
+            styles.activityContainer,
+            completed && { opacity: 0.5 },
+            { borderRightColor: subjectColors[subject] || Colors.primary500 },
+        ]}>
             <View style={styles.contentContainer}>
                 <View style={styles.textContainer}>
                     <View style={styles.mainTextContainer}>
@@ -50,7 +57,7 @@ export default function Activity({id, title, date, coins, body, completed, toggl
 
             <BouncyCheckbox
                 size={24}
-                fillColor={Colors.primary500}
+                fillColor={subjectColors[subject] || Colors.primary500}
                 disableText={true}
                 onPress={() => toggleCompleted(id)}
                 isChecked={completed}
@@ -72,7 +79,6 @@ const styles = StyleSheet.create({
         borderRightWidth: 8,
         borderWidth: 1,
 
-        borderRightColor: Colors.primary500,
         borderLeftColor: Colors.cardStrokeColor,
         borderTopColor: Colors.cardStrokeColor,
         borderBottomColor: Colors.cardStrokeColor,

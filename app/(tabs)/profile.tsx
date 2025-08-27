@@ -85,17 +85,6 @@ export default function ProfileScreen() {
           </View>
         </View>
 
-        {/* <FlatList
-          data = {tasks}
-          renderItem={({item}) => 
-          <View style = {{backgroundColor: "pink", borderWidth: 1, padding: 4}}>
-            <Text style = {Typography.heading18}>{item.title}</Text>
-            <Text style = {Typography.secondary14}>{item.details}</Text>
-            <Text style = {Typography.secondary14}>{item.completed ? "completed" : "not completed"}</Text>
-          </View>
-        }
-          scrollEnabled = {false}
-        /> */}
       </ScrollView>
     </SafeAreaView>
   )

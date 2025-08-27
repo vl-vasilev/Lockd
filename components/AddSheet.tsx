@@ -2,10 +2,13 @@ import Colors from "@/constants/Colors";
 import Typography from "@/constants/Typography";
 import { BottomSheetBackdrop, BottomSheetModal, BottomSheetTextInput, BottomSheetView, useBottomSheetModal } from "@gorhom/bottom-sheet";
 import Octicons from "@react-native-vector-icons/octicons";
-import { forwardRef, useCallback, useMemo, useState } from "react";
+import { forwardRef, useCallback, useEffect, useMemo, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ID } from "react-native-appwrite";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
+import { config, tables } from "../lib/appwrite.js";
 import Separator from "./Separator";
+
 
 
 interface Props {
@@ -16,6 +19,28 @@ type Ref = BottomSheetModal;
 
 
 const AddSheet = forwardRef<Ref, Props>((props, ref) => {
+
+    useEffect(() => {
+        init();
+    }, [])
+
+    async function init() {
+        getData();
+    }
+
+    async function getData() {
+        try {
+            const DBtasks = await tables.listRows(config.db, config.col.tasks);
+            const DBtests = await tables.listRows(config.db, config.col.tests);
+            // console.log(DBtasks)
+        } catch (err) {
+            setError(err)
+            console.error(error)
+        }
+    }
+    const [error, setError] = useState<any>(null);
+
+
     if (props.defaultSelectedType === undefined) props.defaultSelectedType = "task";
     const { dismiss } = useBottomSheetModal();
     const snapPoints = useMemo(() => ["25%", "50%", "75%", "90%"], []);
@@ -25,14 +50,27 @@ const AddSheet = forwardRef<Ref, Props>((props, ref) => {
     )
 
     const [selectedType, setSelectedType] = useState<string>(props.defaultSelectedType);
-    const [details, setDetails] = useState<string>("");
-    const [date, setDate] = useState<string>("");
+
+    // task / test states
+    const [actDetails, setActDetails] = useState<string>("");
+    const [actDate, setActDate] = useState<string>("");
+    const [actSubject, setActSubject] = useState<string>("");
+
+    // note states
     const [noteTitle, setNoteTitle] = useState<string>("");
     const [noteContent, setNoteContent] = useState<string>("");
     const [noteLocked, setNoteLocked] = useState<boolean>(false);
 
-    function add() {
-        console.log("added " + selectedType)
+
+    function addTask() {
+        try {
+            tables.upsertRow(config.db, config.col.tasks, ID.unique(), {title: "Task Title", date: actDate, body: actDetails, coins: 40, completed: false, subject: actSubject })
+            console.log("added task")
+            dismiss()
+        } catch (err) {
+            setError(err)
+            console.error(error)
+        }
     }
 
     return (
@@ -81,21 +119,24 @@ const AddSheet = forwardRef<Ref, Props>((props, ref) => {
 
                 {(selectedType === "task" || selectedType === "test") &&
                     <>
-                        <TouchableOpacity
-                            style={styles.selectSubjectButton}>
-                            <Text style={Typography.secondary14}>
-                                Select Subject
-                            </Text>
-                            <Octicons name="chevron-right" size={16} color={"black"} />
-                        </TouchableOpacity>
+                        <View style={styles.inputContainer}>
+                            <Octicons name="briefcase" size={16} />
+                            <BottomSheetTextInput
+                                style={styles.input}
+                                placeholder="Enter subject (e.g. math, english etc.)"
+                                multiline={true}
+                                value={actSubject}
+                                onChangeText={setActSubject}
+                            />
+                        </View>
                         <View style={styles.inputContainer}>
                             <Octicons name="pencil" size={16} />
                             <BottomSheetTextInput
                                 style={styles.input}
                                 placeholder="Enter details"
                                 multiline={true}
-                                value={details}
-                                onChangeText={setDetails}
+                                value={actDetails}
+                                onChangeText={setActDetails}
                             />
                         </View>
                         <View style={styles.inputContainer}>
@@ -104,8 +145,8 @@ const AddSheet = forwardRef<Ref, Props>((props, ref) => {
                                 style={styles.input}
                                 placeholder="Enter due date [YYYY-MM-DD]"
                                 multiline={true}
-                                value={date}
-                                onChangeText={setDate}
+                                value={actDate}
+                                onChangeText={setActDate}
                             />
                         </View>
 
@@ -151,6 +192,7 @@ const AddSheet = forwardRef<Ref, Props>((props, ref) => {
 
                 <TouchableOpacity
                     style={styles.addButton}
+                    onPress={addTask}
                 >
                     <Text style={Typography.selectedText}>
                         Add {selectedType[0].toLocaleUpperCase() + selectedType.slice(1)}
@@ -228,7 +270,7 @@ const styles = StyleSheet.create({
         width: "100%"
     },
 
-    selectSubjectButton: {
+    selectSubjectButton: { // not used rn
         backgroundColor: Colors.cardBackgroundColor,
         borderColor: Colors.cardStrokeColor,
         borderRadius: 12,

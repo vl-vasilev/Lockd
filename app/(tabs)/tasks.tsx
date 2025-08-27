@@ -10,15 +10,16 @@ import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useEffect, useRef, useState } from "react";
 import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { config, database } from "../../lib/appwrite.js";
+import { config, tables } from "../../lib/appwrite.js";
 
 type Activity = {
-    id: string;
+    $id: string;
     title: string;
     date: string;
     body: string;
     coins: number;
     completed: boolean;
+    subject: string;
 }
 
 export default function SavedScreen() {
@@ -37,11 +38,13 @@ export default function SavedScreen() {
 
     async function getData() {
         try {
-            const { documents, total } = await database.listDocuments(config.db, config.col.tasks);
-            setTasks(documents)
-            console.log(documents)
-        } catch (error) {
-            setError(error)
+            const DBtasks = await tables.listRows(config.db, config.col.tasks);
+            const DBtests = await tables.listRows(config.db, config.col.tests);
+            setTasks(DBtasks.rows)
+            setTests(DBtests.rows)
+            // console.log(DBtasks)
+        } catch (err) {
+            setError(err)
             console.error(error)
         }
     }
@@ -50,83 +53,118 @@ export default function SavedScreen() {
     const [tasks, setTasks] = useState<Array<any>>([]);
     const [tests, setTests] = useState<Array<any>>([]);
 
-    function toggleCompleted(item: Activity, documentId: string) {
-        setTasks(prevTasks =>
-            prevTasks.map(task =>
-                task.id === item.id ? { ...task, completed: !task.completed } : task
-            )
-        );
-
-        try {
-            database.updateDocument(config.db, config.col.tasks, documentId, { completed: !item.completed })
-        } catch (error) {
-            console.error(error)
+    function toggleCompleted(item: Activity) {
+        if (selectedActivity === "tasks") {
+            setTasks(prevTasks =>
+                prevTasks.map(task =>
+                    task.$id === item.$id ? { ...task, completed: !task.completed } : task
+                )
+            );
+            try {
+                tables.upsertRow(config.db, config.col.tasks, item.$id, { completed: !item.completed })
+            } catch (error) {
+                console.error(error)
+            }
         }
+        else {
+            setTests(prevTests =>
+                prevTests.map(test =>
+                    test.$id === item.$id ? { ...test, completed: !test.completed } : test
+                )
+            );
+            try {
+                tables.upsertRow(config.db, config.col.tests, item.$id, { completed: !item.completed })
+            } catch (error) {
+                console.error(error)
+            }
+        }
+
 
     };
 
-    // function renderActivities() {
-    //     const toRender = selectedActivity === "tasks" ? tasks : tests;
-    //     if (toRender.length === 0) {
-    //         return (
-    //             <Card>
-    //                 <Text style={[Typography.default16, { textAlign: "center", justifyContent: "center" }]}>
-    //                     You don't have any {selectedActivity} yet.
-    //                 </Text>
-    //                 <Image source={require('../../assets/images/empty.png')} style={styles.emptyImage} />
-    //             </Card>
-    //         )
+    function renderTasks(completed: boolean) {
+        if (completed) { // return completed tasks
+            return (
+                <FlatList
+                    scrollEnabled={false}
+                    data={tasks.filter(task => task.completed)}
+                    renderItem={({ item }) => <Activity
+                        key={item.$id}
+                        id={item.$id}
+                        title={item.title}
+                        date={item.date}
+                        body={item.body}
+                        coins={item.coins}
+                        completed={item.completed}
+                        toggleCompleted={() => toggleCompleted(item)}
+                        subject={item.subject}
+                    />}
+                    ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
+                />
+            )
+        }
 
-    //     }
-    //     return toRender
-    //         .filter(act => !act.completed)
-    //         .map((item) => {
-    //             return (
-    //                 <Activity
-    //                     id={item.id}
-    //                     key={item.id}
-    //                     title={item.title}
-    //                     date={item.date}
-    //                     body={item.details}
-    //                     coins={item.coins}
-    //                     completed={item.completed}
-    //                     toggleCompleted={toggleCompleted}
-    //                 />
-    //             )
-    //         })
+        return ( // return uncompleted tasks
+            <FlatList
+                scrollEnabled={false}
+                data={tasks.filter(task => !task.completed)}
+                renderItem={({ item }) => <Activity
+                    key={item.$id}
+                    id={item.$id}
+                    title={item.title}
+                    date={item.date}
+                    body={item.body}
+                    coins={item.coins}
+                    completed={item.completed}
+                    toggleCompleted={() => toggleCompleted(item)}
+                    subject={item.subject}
+                />}
+                ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
+            />
+        )
+    }
 
-    // }
+    function renderTests(completed: boolean) {
+        if (completed) { // return completed test
+            return (
+                <FlatList
+                    scrollEnabled={false}
+                    data={tests.filter(test => test.completed)}
+                    renderItem={({ item }) => <Activity
+                        key={item.$id}
+                        id={item.$id}
+                        title={item.title}
+                        date={item.date}
+                        body={item.body}
+                        coins={item.coins}
+                        completed={item.completed}
+                        toggleCompleted={() => toggleCompleted(item)}
+                        subject={item.subject}
+                    />}
+                    ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
+                />
+            )
+        }
 
-    // function renderCompleted() {
-    //     const toRender = selectedActivity === "tasks" ? tasks : tests;
-    //     if (toRender.length === 0) {
-    //         return (
-    //             <Card>
-    //                 <Text style={[Typography.default16, { textAlign: "center", justifyContent: "center" }]}>
-    //                     You haven't completed any {selectedActivity} yet.
-    //                 </Text>
-    //                 <Image source={require('../../assets/images/empty.png')} style={styles.emptyImage} />
-    //             </Card>
-    //         )
-
-    //     }
-    //     return toRender
-    //         .filter(act => act.completed)
-    //         .map((item) => {
-    //             return (
-    //                 <Activity
-    //                     id={item.id}
-    //                     key={item.id}
-    //                     title={item.title}
-    //                     date={item.date}
-    //                     body={item.details}
-    //                     coins={item.coins}
-    //                     completed={item.completed}
-    //                     toggleCompleted={toggleCompleted}
-    //                 />
-    //             )
-    //         })
-    // }
+        return ( // return NOT completed tests
+            <FlatList
+                scrollEnabled={false}
+                data={tests.filter(test => !test.completed)}
+                renderItem={({ item }) => <Activity
+                    key={item.$id}
+                    id={item.$id}
+                    title={item.title}
+                    date={item.date}
+                    body={item.body}
+                    coins={item.coins}
+                    completed={item.completed}
+                    toggleCompleted={() => toggleCompleted(item)}
+                    subject={item.subject}
+                />}
+                ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
+            />
+        )
+    }
 
     return (
         <SafeAreaProvider>
@@ -185,20 +223,10 @@ export default function SavedScreen() {
                     </View>
 
                     <View style={styles.activitiesContainer}>
-                        <FlatList
-                            scrollEnabled={false}
-                            data={tasks}
-                            renderItem={({ item }) => <Activity
-                                key={item.$id}
-                                id={item.$id}
-                                title={item.title}
-                                date={item.date}
-                                body={item.body}
-                                coins={item.coins}
-                                completed={item.completed}
-                                toggleCompleted={() => toggleCompleted(item, item.$id)}
-                            />}
-                        />
+                        {selectedActivity === "tasks" ?
+                            renderTasks(false) :
+                            renderTests(false)
+                        }
                     </View>
 
                     <AboveCardText
@@ -206,7 +234,10 @@ export default function SavedScreen() {
                     />
 
                     <View style={styles.activitiesContainer}>
-
+                        {selectedActivity === "tasks" ?
+                            renderTasks(true) :
+                            renderTests(true)
+                        }
                     </View>
                 </ScrollView>
             </SafeAreaView>
