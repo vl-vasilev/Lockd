@@ -52,7 +52,7 @@ const AddSheet = forwardRef<Ref, Props>((props, ref) => {
     const [selectedType, setSelectedType] = useState<string>(props.defaultSelectedType);
 
     // task / test states
-    const [actDetails, setActDetails] = useState<string>("");
+    const [actBody, setActBody] = useState<string>("");
     const [actDate, setActDate] = useState<string>("");
     const [actSubject, setActSubject] = useState<string>("");
 
@@ -63,14 +63,66 @@ const AddSheet = forwardRef<Ref, Props>((props, ref) => {
 
 
     function addTask() {
-        try {
-            tables.upsertRow(config.db, config.col.tasks, ID.unique(), {title: "Task Title", date: actDate, body: actDetails, coins: 40, completed: false, subject: actSubject })
-            console.log("added task")
-            dismiss()
-        } catch (err) {
-            setError(err)
-            console.error(error)
+        if (!actBody || !actDate || !actSubject) {
+            console.log("please fill all task fields")
+            return;
         }
+
+        tables.createRow(   
+            config.db,
+            config.col.tasks,
+            ID.unique(),
+            { date: actDate, body: actBody, coins: 40, completed: false, subject: actSubject },
+        ).then(function (response) {
+            setActBody("");
+            setActDate("");
+            setActSubject("");
+        }, function (error) {
+            console.log(error)
+        })
+        dismiss()
+    }
+
+    function addTest() {
+        if (!actBody || !actDate || !actSubject) {
+            console.log("please fill all test fields")
+            return;
+        }
+
+        tables.createRow(   
+            config.db,
+            config.col.tests,
+            ID.unique(),
+            { date: actDate, body: actBody, coins: 40, completed: false, subject: actSubject },
+        ).then(function (response) {
+            setActBody("");
+            setActDate("");
+            setActSubject("");
+        }, function (error) {
+            console.log(error)
+        })
+        dismiss()
+    }
+
+    function addNote() {
+        if (!noteTitle || !noteContent) {
+            console.log("please fill all note fields")
+            return;
+        }
+
+        tables.createRow(   
+            config.db,
+            config.col.tasks, // change to notes
+            ID.unique(),
+            { },
+        ).then(function (response) {
+            setActBody("");
+            setActDate("");
+            setActSubject("");
+        }, function (error) {
+            console.log(error)
+        })
+        dismiss()
     }
 
     return (
@@ -80,7 +132,7 @@ const AddSheet = forwardRef<Ref, Props>((props, ref) => {
             snapPoints={snapPoints}
             enablePanDownToClose={true}
             backdropComponent={renderBackdrop}
-            index={1} // there is an invisible index 0 zero which is 0% so index here = index + 1 in the array
+            index={2} // there is an invisible index 0 zero which is 0% so index here = index + 1 in the array
             keyboardBehavior="extend"
         >
             <BottomSheetView style={styles.sheetContainer}>
@@ -135,8 +187,8 @@ const AddSheet = forwardRef<Ref, Props>((props, ref) => {
                                 style={styles.input}
                                 placeholder="Enter details"
                                 multiline={true}
-                                value={actDetails}
-                                onChangeText={setActDetails}
+                                value={actBody}
+                                onChangeText={setActBody}
                             />
                         </View>
                         <View style={styles.inputContainer}>
@@ -192,7 +244,7 @@ const AddSheet = forwardRef<Ref, Props>((props, ref) => {
 
                 <TouchableOpacity
                     style={styles.addButton}
-                    onPress={addTask}
+                    onPress={selectedType === "task" ? addTask : selectedType === "test" ? addTest : addNote}
                 >
                     <Text style={Typography.selectedText}>
                         Add {selectedType[0].toLocaleUpperCase() + selectedType.slice(1)}

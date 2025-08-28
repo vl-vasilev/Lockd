@@ -17,7 +17,7 @@ export default function Card({children, style, isSelected = false} : CardProps){
 
 const styles = StyleSheet.create({
     card: {
-        backgroundColor: Colors.cardBackgroundColor,
+        backgroundColor: Colors.screenBackgroundColor,
         borderRadius: 12,
         paddingHorizontal: 12,
         paddingVertical: 8,

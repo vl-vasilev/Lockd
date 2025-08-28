@@ -163,7 +163,7 @@ export default function NotesScreen() {
                                 <Text
                                     style={[
                                         { textAlign: "center" },
-                                        Typography.default16,
+                                        Typography.secondary16,
                                         selectedCategory === "all" && Typography.selectedText
                                     ]}
                                 >
@@ -182,7 +182,7 @@ export default function NotesScreen() {
                                 <Text
                                     style={[
                                         { textAlign: "center" },
-                                        Typography.default16,
+                                        Typography.secondary16,
                                         selectedCategory === "favorites" && Typography.selectedText
                                     ]}
                                 >
@@ -201,7 +201,7 @@ export default function NotesScreen() {
                                 <Text
                                     style={[
                                         { textAlign: "center" },
-                                        Typography.default16,
+                                        Typography.secondary16,
                                         selectedCategory === "locked" && Typography.selectedText
                                     ]}
                                 >

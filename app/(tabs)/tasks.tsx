@@ -10,11 +10,10 @@ import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useEffect, useRef, useState } from "react";
 import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { config, tables } from "../../lib/appwrite.js";
+import { client, config, tables } from "../../lib/appwrite.js";
 
 type Activity = {
     $id: string;
-    title: string;
     date: string;
     body: string;
     coins: number;
@@ -30,6 +29,28 @@ export default function SavedScreen() {
 
     useEffect(() => {
         init();
+
+        const unsubscribe = client.subscribe([
+            `databases.${config.db}.tables.${config.col.tasks}.rows`, // listens to tasks
+            `databases.${config.db}.tables.${config.col.tests}.rows`, // listens to tests
+        ], (response) => { 
+            if (response.events[0].includes(config.col.tasks)) {
+                setTasks(prevTasks => [
+                    response.payload,
+                    ...prevTasks
+                ])
+            }
+            else if (response.events[0].includes(config.col.tests)) {
+                setTests(prevTests => [
+                    response.payload,
+                    ...prevTests
+                ])
+            }
+        })
+
+        return () => {
+            unsubscribe();
+        }
     }, [])
 
     async function init() {
@@ -53,34 +74,42 @@ export default function SavedScreen() {
     const [tasks, setTasks] = useState<Array<any>>([]);
     const [tests, setTests] = useState<Array<any>>([]);
 
-    function toggleCompleted(item: Activity) {
-        if (selectedActivity === "tasks") {
-            setTasks(prevTasks =>
-                prevTasks.map(task =>
-                    task.$id === item.$id ? { ...task, completed: !task.completed } : task
-                )
-            );
-            try {
-                tables.upsertRow(config.db, config.col.tasks, item.$id, { completed: !item.completed })
-            } catch (error) {
-                console.error(error)
-            }
-        }
-        else {
-            setTests(prevTests =>
-                prevTests.map(test =>
-                    test.$id === item.$id ? { ...test, completed: !test.completed } : test
-                )
-            );
-            try {
-                tables.upsertRow(config.db, config.col.tests, item.$id, { completed: !item.completed })
-            } catch (error) {
-                console.error(error)
-            }
-        }
+    function toggleCompletedTask(item: Activity) {
+        setTasks(prevTasks =>
+            prevTasks.map(task =>
+                task.$id === item.$id ? { ...task, completed: !task.completed } : task
+            )
+        );
 
+        tables.updateRow(
+            config.db,
+            config.col.tasks,
+            item.$id,
+            { completed: !item.completed },
+        ).then(function (response) {
+        }, function (error) {
+            console.log(error)
+        })
 
     };
+
+    function toggleCompletedTest(item: Activity) {
+        setTests(prevTests =>
+            prevTests.map(test =>
+                test.$id === item.$id ? { ...test, completed: !test.completed } : test
+            )
+        );
+        tables.updateRow(
+            config.db,
+            config.col.tests,
+            item.$id,
+            { completed: !item.completed },
+        ).then(function (response) {
+        }, function (error) {
+            console.log(error)
+        })
+
+    }
 
     function renderTasks(completed: boolean) {
         if (completed) { // return completed tasks
@@ -91,12 +120,11 @@ export default function SavedScreen() {
                     renderItem={({ item }) => <Activity
                         key={item.$id}
                         id={item.$id}
-                        title={item.title}
                         date={item.date}
                         body={item.body}
                         coins={item.coins}
                         completed={item.completed}
-                        toggleCompleted={() => toggleCompleted(item)}
+                        toggleCompleted={() => toggleCompletedTask(item)}
                         subject={item.subject}
                     />}
                     ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
@@ -111,12 +139,11 @@ export default function SavedScreen() {
                 renderItem={({ item }) => <Activity
                     key={item.$id}
                     id={item.$id}
-                    title={item.title}
                     date={item.date}
                     body={item.body}
                     coins={item.coins}
                     completed={item.completed}
-                    toggleCompleted={() => toggleCompleted(item)}
+                    toggleCompleted={() => toggleCompletedTask(item)}
                     subject={item.subject}
                 />}
                 ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
@@ -133,12 +160,11 @@ export default function SavedScreen() {
                     renderItem={({ item }) => <Activity
                         key={item.$id}
                         id={item.$id}
-                        title={item.title}
                         date={item.date}
                         body={item.body}
                         coins={item.coins}
                         completed={item.completed}
-                        toggleCompleted={() => toggleCompleted(item)}
+                        toggleCompleted={() => toggleCompletedTest(item)}
                         subject={item.subject}
                     />}
                     ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
@@ -153,12 +179,11 @@ export default function SavedScreen() {
                 renderItem={({ item }) => <Activity
                     key={item.$id}
                     id={item.$id}
-                    title={item.title}
                     date={item.date}
                     body={item.body}
                     coins={item.coins}
                     completed={item.completed}
-                    toggleCompleted={() => toggleCompleted(item)}
+                    toggleCompleted={() => toggleCompletedTest(item)}
                     subject={item.subject}
                 />}
                 ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
@@ -211,7 +236,7 @@ export default function SavedScreen() {
                                 <Text
                                     style={[
                                         { textAlign: "center" },
-                                        Typography.default16,
+                                        Typography.secondary16,
                                         selectedActivity === "tests" && Typography.selectedText
                                     ]}
                                 >

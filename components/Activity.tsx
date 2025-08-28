@@ -8,7 +8,6 @@ import BouncyCheckbox from "react-native-bouncy-checkbox";
 
 interface ActivityProps {
     id: number;
-    title: string;
     date: string;
     body: string;
     coins: number;
@@ -19,7 +18,7 @@ interface ActivityProps {
 
 
 
-export default function Activity({ id, title, date, coins, body, completed, toggleCompleted, subject }: ActivityProps) {
+export default function Activity({ id, date, coins, body, completed, toggleCompleted, subject }: ActivityProps) {
     return (
         <View style={[
             styles.activityContainer,
@@ -29,7 +28,7 @@ export default function Activity({ id, title, date, coins, body, completed, togg
             <View style={styles.contentContainer}>
                 <View style={styles.textContainer}>
                     <View style={styles.mainTextContainer}>
-                        <Text style={Typography.heading16}>{title}</Text>
+                        <Text style={Typography.heading16}>{subject.charAt(0).toUpperCase() + subject.slice(1)}</Text>
                         <View style={styles.dateContainer}>
                             <Octicons name="calendar" size={16} color={"gray"} />
                             <Text style={Typography.default16}> {date}</Text>

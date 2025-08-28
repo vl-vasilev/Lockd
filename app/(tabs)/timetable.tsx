@@ -1,6 +1,5 @@
 import AboveCardText from "@/components/AboveCardText";
 import AddSheet from "@/components/AddSheet";
-import Contact from "@/components/Contact";
 import DayCard from "@/components/DayCard";
 import Fab from "@/components/Fab";
 import ProfileSection from "@/components/ProfileSection";
@@ -66,12 +65,12 @@ const INITIALSUBJECTDATA: SubjectData[] = [
         id: "1", // Monday
         subjects: [
             {
-                name: "Discussion",
+                name: "discussion",
                 start: "8:00",
                 end: "8:40",
             },
             {
-                name: "Physics",
+                name: "physics",
                 start: "8:50",
                 end: "9:30",
             },
@@ -81,12 +80,12 @@ const INITIALSUBJECTDATA: SubjectData[] = [
                 end: "10:20",
             },
             {
-                name: "Bulgarian",
+                name: "bulgarian",
                 start: "10:30",
                 end: "11:10",
             },
             {
-                name: "Bulgarian",
+                name: "bulgarian",
                 start: "11:20",
                 end: "12:00",
             },
@@ -96,7 +95,7 @@ const INITIALSUBJECTDATA: SubjectData[] = [
                 end: "13:00",
             },
             {
-                name: "Coding",
+                name: "coding",
                 start: "13:10",
                 end: "13:50",
             },
@@ -106,32 +105,32 @@ const INITIALSUBJECTDATA: SubjectData[] = [
         id: "2", // Tuesday
         subjects: [
             {
-                name: "English",
+                name: "english",
                 start: "8:00",
                 end: "8:40",
             },
             {
-                name: "English",
+                name: "english",
                 start: "8:50",
                 end: "9:30",
             },
             {
-                name: "Bulgarian",
+                name: "bulgarian",
                 start: "9:40",
                 end: "10:20",
             },
             {
-                name: "Geography",
+                name: "geography",
                 start: "10:30",
                 end: "11:10",
             },
             {
-                name: "Geography",
+                name: "geography",
                 start: "11:20",
                 end: "12:00",
             },
             {
-                name: "Art Class",
+                name: "art Class",
                 start: "12:20",
                 end: "13:00",
             },
@@ -141,42 +140,42 @@ const INITIALSUBJECTDATA: SubjectData[] = [
         id: "3", // Wednesday
         subjects: [
             {
-                name: "Biology",
+                name: "biology",
                 start: "8:00",
                 end: "8:40",
             },
             {
-                name: "Chemistry",
+                name: "chemistry",
                 start: "8:50",
                 end: "9:30",
             },
             {
-                name: "Philosophy",
+                name: "philosophy",
                 start: "9:40",
                 end: "10:20",
             },
             {
-                name: "History",
+                name: "history",
                 start: "10:30",
                 end: "11:10",
             },
             {
-                name: "Computer Work",
+                name: "computer Work",
                 start: "11:20",
                 end: "12:00",
             },
             {
-                name: "Economics",
+                name: "economics",
                 start: "12:20",
                 end: "13:00",
             },
             {
-                name: "German",
+                name: "german",
                 start: "13:10",
                 end: "13:50",
             },
             {
-                name: "German",
+                name: "german",
                 start: "14:00",
                 end: "14:40",
             },
@@ -191,22 +190,22 @@ const INITIALSUBJECTDATA: SubjectData[] = [
                 end: "8:40",
             },
             {
-                name: "Philosophy",
+                name: "philosophy",
                 start: "8:50",
                 end: "9:30",
             },
             {
-                name: "Biology",
+                name: "biology",
                 start: "9:40",
                 end: "10:20",
             },
             {
-                name: "History",
+                name: "history",
                 start: "10:30",
                 end: "11:10",
             },
             {
-                name: "Math",
+                name: "math",
                 start: "11:20",
                 end: "12:00",
             },
@@ -221,27 +220,27 @@ const INITIALSUBJECTDATA: SubjectData[] = [
         id: "5", // Friday
         subjects: [
             {
-                name: "Chemistry",
+                name: "chemistry",
                 start: "8:00",
                 end: "8:40",
             },
             {
-                name: "Geography",
+                name: "geography",
                 start: "8:50",
                 end: "9:30",
             },
             {
-                name: "Physics",
+                name: "physics",
                 start: "9:40",
                 end: "10:20",
             },
             {
-                name: "Math",
+                name: "math",
                 start: "10:30",
                 end: "11:10",
             },
             {
-                name: "History",
+                name: "history",
                 start: "11:20",
                 end: "12:00",
             },
@@ -259,14 +258,6 @@ const INITIALSUBJECTDATA: SubjectData[] = [
     },
 
 ]
-
-type Contact = {
-    role: string; // teacher / student
-    name: string;
-    contactInfo: string;
-}
-
-
 
 
 

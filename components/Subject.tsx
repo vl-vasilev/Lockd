@@ -1,4 +1,5 @@
 import Colors from "@/constants/Colors";
+import subjectColors from "@/constants/subjectColors";
 import Typography from "@/constants/Typography";
 import Octicons from "@react-native-vector-icons/octicons";
 import { StyleSheet, Text, View } from "react-native";
@@ -18,10 +19,10 @@ export default function Subject({ subject, room, teacher, start, end }: SubjectP
 
     return (
         <View style={styles.subjectContainer}>
-            <View style={styles.triangleRotated} />
+            <View style={[styles.triangleRotated, {backgroundColor: subjectColors[subject] || Colors.primary500}]} />
             <View style={styles.leftSide}>
                 <View style={styles.subjectAndRoom}>
-                    <Text style={Typography.default16}>{subject}</Text>
+                    <Text style={Typography.default16}>{subject.charAt(0).toUpperCase() + subject.slice(1)}</Text>
                     <View style={styles.roomContainer}>
                         <Octicons name="key" size={16} color="black" />
                         <Text style={Typography.secondary14}>{room}</Text>

@@ -8,7 +8,7 @@ import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import Octicons from "@react-native-vector-icons/octicons";
 import { useRef } from "react";
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 
 
@@ -18,75 +18,113 @@ export default function ProfileScreen() {
   const handlePresentPress = () => bottomSheetRef.current?.present();
 
   return (
-    <SafeAreaView style={[PageStyle, { position: 'relative', alignItems: "center" }]}>
-      <Fab openSheet={handlePresentPress} />
-      <AddSheet ref={bottomSheetRef} />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle = {{alignItems: "center"}}
-      >
+    <SafeAreaProvider>
 
-        <View style={styles.profileBackground}>
-          <Image source={require('../../assets/images/avatar.png')} style={styles.profilePicture} />
-        </View>
-        <View style={styles.profileIcons}>
-          <TouchableOpacity>
-            <Octicons name="briefcase" size={24} color={"black"} />
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Octicons name={"light-bulb"} size={24} color={"black"} />
-          </TouchableOpacity>
-        </View>
-        <Text style={[Typography.heading20, { textAlign: "center" }]}>
-          Vlado
-        </Text>
-        <View style={styles.levelContainer}>
-          <View style={styles.levelsText}>
-            <Text style={Typography.secondary14}>Lvl 4</Text>
-            <Text style={Typography.secondary14}>432 / 500 xp</Text>
+      <SafeAreaView style={[PageStyle, { position: 'relative', alignItems: "center" }]}>
+        <Fab openSheet={handlePresentPress} />
+        <AddSheet ref={bottomSheetRef} />
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ alignItems: "center" }}
+        >
+
+          <View style={styles.profileBackground}>
+            <Image source={require('../../assets/images/avatar.png')} style={styles.profilePicture} />
           </View>
-          <View style={styles.levelBar}></View>
-        </View>
-        <View style={styles.profileStats}>
-          <View style={styles.stat}>
-            <View style={styles.statTop}>
-              <Image source={require('../../assets/images/coin.png')} style={styles.statCoin} />
-              <Text style={Typography.heading20}>100</Text>
+          <View style={styles.profileIcons}>
+            <TouchableOpacity>
+              <Octicons name="briefcase" size={24} color={"black"} />
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Octicons name={"light-bulb"} size={24} color={"black"} />
+            </TouchableOpacity>
+          </View>
+          <Text style={[Typography.heading20, { textAlign: "center" }]}>
+            Vlado
+          </Text>
+          <View style={styles.levelContainer}>
+            <View style={styles.levelsText}>
+              <Text style={Typography.secondary14}>Lvl 4</Text>
+              <Text style={Typography.secondary14}>432 / 500 xp</Text>
             </View>
-            <Text style={Typography.secondary14}>Coins</Text>
+            <View style={styles.levelBar}></View>
           </View>
-
-          <Separator vertical={true} />
-
-          <View style={styles.stat}>
-            <View style={styles.statTop}>
-              <Octicons name={"clock-fill"} size={24} color={"black"} />
-              <Text style={Typography.heading20}>12h</Text>
+          <View style={styles.profileStats}>
+            <View style={styles.stat}>
+              <View style={styles.statTop}>
+                <Image source={require('../../assets/images/coin.png')} style={styles.statCoin} />
+                <Text style={Typography.heading20}>100</Text>
+              </View>
+              <Text style={Typography.secondary14}>Coins</Text>
             </View>
-            <Text style={Typography.secondary14}>Focus time</Text>
-          </View>
 
-          <Separator vertical={true} />
+            <Separator vertical={true} />
 
-          <View style={styles.stat}>
-            <View style={styles.statTop}>
-              <Octicons name={"chevron-up"} size={24} color={"green"} />
-              <Text style={Typography.heading20}>4th</Text>
+            <View style={styles.stat}>
+              <View style={styles.statTop}>
+                <Octicons name={"clock-fill"} size={24} color={"black"} />
+                <Text style={Typography.heading20}>12h</Text>
+              </View>
+              <Text style={Typography.secondary14}>Focus time</Text>
             </View>
-            <Text style={Typography.secondary14}>Ranking</Text>
-          </View>
-        </View>
 
-        <View style={styles.refferal}>
-          <Text style={[Typography.heading18, Typography.selectedText]}>Invite a friend!</Text>
-          <View style={styles.refferalReward}>
-            <Image source={require('../../assets/images/coin.png')} style={styles.refferalCoin} />
-            <Text>50 / friend</Text>
-          </View>
-        </View>
+            <Separator vertical={true} />
 
-      </ScrollView>
-    </SafeAreaView>
+            <View style={styles.stat}>
+              <View style={styles.statTop}>
+                <Octicons name={"chevron-up"} size={24} color={"green"} />
+                <Text style={Typography.heading20}>4th</Text>
+              </View>
+              <Text style={Typography.secondary14}>Ranking</Text>
+            </View>
+          </View>
+
+          <View style={styles.refferal}>
+            <Text style={[Typography.heading18, Typography.selectedText]}>Invite a friend!</Text>
+            <View style={styles.refferalReward}>
+              <Image source={require('../../assets/images/coin.png')} style={styles.refferalCoin} />
+              <Text>50 / friend</Text>
+            </View>
+          </View>
+
+          <View style={styles.buttonsContainer}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => console.log("button pressed")}
+            >
+              <Octicons name="bell" size={24} color="black" />
+              <Text style={Typography.default16}>Notifications</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => console.log("button pressed")}
+            >
+              <Octicons name="gear" size={24} color="black" />
+              <Text style={Typography.default16}>Settings</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => console.log("button pressed")}
+            >
+              <Octicons name="tools" size={24} color="black" />
+              <Text style={Typography.default16}>Customization</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => console.log("button pressed")}
+            >
+              <Octicons name="mortar-board" size={24} color="black" />
+              <Text style={Typography.default16}>Achievements</Text>
+            </TouchableOpacity>
+          </View>
+
+
+        </ScrollView>
+      </SafeAreaView >
+    </SafeAreaProvider>
   )
 }
 
@@ -153,7 +191,7 @@ const styles = StyleSheet.create({
   refferal: {
     backgroundColor: Colors.primary500,
     width: "90%",
-    marginTop: 32,
+    marginVertical: 32,
     padding: 16,
     borderRadius: 16,
   },
@@ -170,5 +208,20 @@ const styles = StyleSheet.create({
   refferalCoin: {
     width: 16,
     height: 16,
+  },
+  buttonsContainer: {
+    width: "90%",
+    flexDirection: "column",
+    gap: 16,
+  },
+  button: {
+    flexDirection: "row",
+    backgroundColor: "#f6f6f6ff",
+    alignItems: "center",
+    padding: 8,
+    gap: 8,
+    borderWidth: 1,
+    borderColor: "#d9d9d9",
+    borderRadius: 12,
   }
 });
