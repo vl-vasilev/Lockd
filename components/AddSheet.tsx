@@ -112,13 +112,13 @@ const AddSheet = forwardRef<Ref, Props>((props, ref) => {
 
         tables.createRow(   
             config.db,
-            config.col.tasks, // change to notes
+            config.col.notes, // change to notes
             ID.unique(),
-            { },
+            {title: noteTitle, content: noteContent, date: "Now", isLocked: noteLocked },
         ).then(function (response) {
-            setActBody("");
-            setActDate("");
-            setActSubject("");
+            setNoteTitle("");
+            setNoteContent("");
+            setNoteLocked(false);
         }, function (error) {
             console.log(error)
         })

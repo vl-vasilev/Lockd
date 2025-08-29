@@ -33,14 +33,14 @@ export default function SavedScreen() {
         const unsubscribe = client.subscribe([
             `databases.${config.db}.tables.${config.col.tasks}.rows`, // listens to tasks
             `databases.${config.db}.tables.${config.col.tests}.rows`, // listens to tests
-        ], (response) => { 
-            if (response.events[0].includes(config.col.tasks)) {
+        ], (response) => {
+            if (response.events[0].includes(config.col.tasks && "create")) {
                 setTasks(prevTasks => [
                     response.payload,
                     ...prevTasks
                 ])
             }
-            else if (response.events[0].includes(config.col.tests)) {
+            else if (response.events[0].includes(config.col.tests && "create")) {
                 setTests(prevTests => [
                     response.payload,
                     ...prevTests
@@ -63,7 +63,6 @@ export default function SavedScreen() {
             const DBtests = await tables.listRows(config.db, config.col.tests);
             setTasks(DBtasks.rows)
             setTests(DBtests.rows)
-            // console.log(DBtasks)
         } catch (err) {
             setError(err)
             console.error(error)
@@ -132,7 +131,7 @@ export default function SavedScreen() {
             )
         }
 
-        return ( // return uncompleted tasks
+        return ( // return NOT completed tasks
             <FlatList
                 scrollEnabled={false}
                 data={tasks.filter(task => !task.completed)}
