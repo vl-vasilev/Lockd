@@ -37,12 +37,12 @@ export default function TabsLayout() {
 
       <Tabs.Screen name="tasks" options={{
         title: "Tasks",
-        tabBarIcon: ({color}) => <Octicons name = "tasklist" size = {24} color={color}/>
+        tabBarIcon: ({ color }) => <Octicons name="tasklist" size={24} color={color} />
       }} />
 
       <Tabs.Screen name="notes" options={{
         title: "Notes",
-        tabBarIcon: ({color}) => <Octicons name = "paperclip" size = {24} color={color}/>
+        tabBarIcon: ({ color }) => <Octicons name="paperclip" size={24} color={color} />
       }} />
 
       <Tabs.Screen name="profile" options={{
@@ -55,6 +55,10 @@ export default function TabsLayout() {
           )
         },
       }} />
+      <Tabs.Screen
+        name="notes/[id]"
+        options={{ href: null }}
+      />
     </Tabs>
   );
 }

@@ -33,10 +33,10 @@ export default function ProfileScreen() {
           </View>
           <View style={styles.profileIcons}>
             <TouchableOpacity>
-              <Octicons name="briefcase" size={24} color={"black"} />
+              <Octicons name="briefcase" size={24} color={"black"} /> 
             </TouchableOpacity>
             <TouchableOpacity>
-              <Octicons name={"light-bulb"} size={24} color={"black"} />
+              <Octicons name="light-bulb" size={24} color={"black"} />
             </TouchableOpacity>
           </View>
           <Text style={[Typography.heading20, { textAlign: "center" }]}>

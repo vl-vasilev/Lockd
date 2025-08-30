@@ -1,6 +1,7 @@
 import Colors from "@/constants/Colors";
 import Typography from "@/constants/Typography";
 import Octicons from "@react-native-vector-icons/octicons";
+import { useRouter } from "expo-router";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 interface NoteProps {
@@ -15,9 +16,12 @@ interface NoteProps {
 }
 
 export default function Note({ id, title, content, date, isLocked, isFavorite, toggleLocked, toggleFavorite }: NoteProps) {
-
-    return (
-        <View style={styles.noteContainer}>
+    const router = useRouter();
+    return (   
+        <TouchableOpacity
+         style={styles.noteContainer}
+         onPress={() => router.push(`/(tabs)/notes/${id}` as any)}
+         >
             {isLocked ? (
                 <View style={styles.lockedContainer}>
                     <Text style={Typography.heading18}>Locked Note</Text>
@@ -31,11 +35,14 @@ export default function Note({ id, title, content, date, isLocked, isFavorite, t
                     <View style={styles.textContainer}>
                         <View>
                             <Text style={Typography.heading18}>{title}</Text>
-                            <Text style={Typography.secondary14}>{content && typeof content === 'string' ? content : 'No content available'}</Text>
+                            <Text style={Typography.secondary14}>
+                                {content.length > 60 ?
+                                    content.slice(0, 60) + "..." : content}
+                            </Text>
                         </View>
                         <Text style={Typography.secondary16}>{date}</Text>
                     </View>
-                    <View style={{ flexDirection: "column", justifyContent: "space-between"}}>
+                    <View style={{ flexDirection: "column", justifyContent: "space-between" }}>
                         <TouchableOpacity
                             onPress={() => toggleFavorite(id)}
                         >
@@ -54,7 +61,7 @@ export default function Note({ id, title, content, date, isLocked, isFavorite, t
                     </View>
                 </>
             )}
-        </View>
+        </TouchableOpacity>
     )
 }
 

@@ -72,40 +72,43 @@ export default function NotesScreen() {
     const handlePresentPress = () => bottomSheetRef.current?.present();
 
     const [error, setError] = useState<any>(null);
-    
-        useEffect(() => {
-            init();
-    
-            const unsubscribe = client.subscribe([
-                `databases.${config.db}.tables.${config.col.notes}.rows`, // listens to notes
-            ], (response) => {
-                if (response.events[0].includes(config.col.notes && "create")) {
-                    setNotes(prevNotes => [
-                        response.payload,
-                        ...prevNotes
-                    ])
-                }
-                
-            })
-    
-            return () => {
-                unsubscribe();
+
+    useEffect(() => {
+        init();
+
+        const unsubscribe = client.subscribe([
+            `databases.${config.db}.tables.${config.col.notes}.rows`, // listens to notes
+        ], (response) => {
+            if (response.events[0].includes(config.col.notes && "create")) {
+                setNotes(prevNotes => [
+                    response.payload,
+                    ...prevNotes
+                ])
             }
-        }, [])
-    
-        async function init() {
-            getData();
-        }
-    
-        async function getData() {
-            try {
-                const DBnotes = await tables.listRows(config.db, config.col.notes);
-                setNotes(DBnotes.rows);
-            } catch (err) {
-                setError(err)
-                console.error("Error getting data: " +  error)
+            else if (response.events[0].includes(config.col.notes && "delete")) {
+                getData();
             }
+
+        })
+
+        return () => {
+            unsubscribe();
         }
+    }, [])
+
+    async function init() {
+        getData();
+    }
+
+    async function getData() {
+        try {
+            const DBnotes = await tables.listRows(config.db, config.col.notes);
+            setNotes(DBnotes.rows);
+        } catch (err) {
+            setError(err)
+            console.error("Error getting data: " + error)
+        }
+    }
 
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategory, setSelectedCategory] = useState<string>("all");
@@ -261,12 +264,12 @@ export default function NotesScreen() {
                             data={filteredNotes}
                             renderItem={({ item, }) => <Note
                                 key={item.$id}
-                                id={item.$id} 
-                                title = {item.title}
+                                id={item.$id}
+                                title={item.title}
                                 content={item.content}
-                                date = {item.date}
-                                isLocked = {item.isLocked}
-                                isFavorite = {item.isFavorite}
+                                date={item.date}
+                                isLocked={item.isLocked}
+                                isFavorite={item.isFavorite}
                                 toggleLocked={() => toggleLocked(item)}
                                 toggleFavorite={() => toggleFavorite(item)}
                             />}

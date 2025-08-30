@@ -69,7 +69,7 @@ export default function SavedScreen() {
         }
     }
 
-    const [selectedActivity, setSelectedActivity] = useState<string | null>("tasks");
+    const [selectedActivity, setSelectedActivity] = useState<string>("tasks");
     const [tasks, setTasks] = useState<Array<any>>([]);
     const [tests, setTests] = useState<Array<any>>([]);
 
@@ -195,7 +195,7 @@ export default function SavedScreen() {
             <SafeAreaView style={[PageStyle, { position: 'relative' }]}>
                 <ProfileSection />
                 <Fab openSheet={handlePresentPress} />
-                <AddSheet ref={bottomSheetRef} />
+                <AddSheet ref={bottomSheetRef}/>
                 <ScrollView
                     showsVerticalScrollIndicator={false}
                     style={{ paddingHorizontal: 16 }}

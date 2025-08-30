@@ -125,9 +125,11 @@ export default function Index() {
               selectedDayBackgroundColor: Colors.primary500,
               selectedDayTextColor: '#ffffff',
               dotStyle: {
-                width: 6,
-                height: 6,
-                borderRadius: 3,
+                width: 8,
+                height: 8,
+                borderRadius: 4,
+                borderColor: "#fff",
+                borderWidth: 1,
               },
             }}
           />
