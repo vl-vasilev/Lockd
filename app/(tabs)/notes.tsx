@@ -262,6 +262,8 @@ export default function NotesScreen() {
                         <FlatList
                             scrollEnabled={false}
                             data={filteredNotes}
+                            numColumns={2}
+                            columnWrapperStyle = {{gap: 8, marginVertical: 4}}
                             renderItem={({ item, }) => <Note
                                 key={item.$id}
                                 id={item.$id}
@@ -312,10 +314,6 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     notesContainer: {
-        // backgroundColor: "red",
         flex: 1,
-        flexDirection: "row",
-        flexWrap: "wrap",
-        gap: 8,
     }
 })

@@ -4,9 +4,9 @@ import { BottomSheetBackdrop, BottomSheetModal, BottomSheetTextInput, BottomShee
 import Octicons from "@react-native-vector-icons/octicons";
 import { forwardRef, useCallback, useEffect, useMemo, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { ID } from "react-native-appwrite";
+import { ID, Permission, Role } from "react-native-appwrite";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
-import { config, tables } from "../lib/appwrite.js";
+import { checkUser, config, tables } from "../lib/appwrite.js";
 import Separator from "./Separator";
 
 
@@ -19,6 +19,8 @@ type Ref = BottomSheetModal;
 
 
 const AddSheet = forwardRef<Ref, Props>((props, ref) => {
+    const [user, setUser] = useState<any>(null);
+
 
     useEffect(() => {
         init();
@@ -30,12 +32,11 @@ const AddSheet = forwardRef<Ref, Props>((props, ref) => {
 
     async function getData() {
         try {
-            const DBtasks = await tables.listRows(config.db, config.col.tasks);
-            const DBtests = await tables.listRows(config.db, config.col.tests);
-            // console.log(DBtasks)
+            setUser(checkUser);
+            console.log("user: " + user.$id);
         } catch (err) {
             setError(err)
-            console.error(error)
+            console.error("error getting data in AddSheet: " + error)
         }
     }
     const [error, setError] = useState<any>(null);
@@ -68,17 +69,22 @@ const AddSheet = forwardRef<Ref, Props>((props, ref) => {
             return;
         }
 
-        tables.createRow(   
+        tables.createRow(
             config.db,
             config.col.tasks,
             ID.unique(),
             { date: actDate, body: actBody, coins: 40, completed: false, subject: actSubject },
+            [
+                Permission.read(Role.user(user.$id)),    // Only this user can read
+                Permission.update(Role.user(user.$id)),  // Only this user can update
+                Permission.delete(Role.user(user.$id))   // Only this user can delete
+            ]
         ).then(function (response) {
             setActBody("");
             setActDate("");
             setActSubject("");
         }, function (error) {
-            console.log(error)
+            console.log("error creating task: " + error)
         })
         dismiss()
     }
@@ -89,7 +95,7 @@ const AddSheet = forwardRef<Ref, Props>((props, ref) => {
             return;
         }
 
-        tables.createRow(   
+        tables.createRow(
             config.db,
             config.col.tests,
             ID.unique(),
@@ -110,11 +116,11 @@ const AddSheet = forwardRef<Ref, Props>((props, ref) => {
             return;
         }
 
-        tables.createRow(   
+        tables.createRow(
             config.db,
             config.col.notes, // change to notes
             ID.unique(),
-            {title: noteTitle, content: noteContent, date: "Now", isLocked: noteLocked },
+            { title: noteTitle, content: noteContent, date: "Now", isLocked: noteLocked },
         ).then(function (response) {
             setNoteTitle("");
             setNoteContent("");

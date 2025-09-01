@@ -54,7 +54,7 @@ export default function NoteDetails() {
 
     async function deleteNote() {
         try {
-            const result = await tables.deleteRow({
+            await tables.deleteRow({
                 databaseId: config.db,
                 tableId: config.col.notes,
                 rowId: noteId

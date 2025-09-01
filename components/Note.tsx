@@ -17,17 +17,18 @@ interface NoteProps {
 
 export default function Note({ id, title, content, date, isLocked, isFavorite, toggleLocked, toggleFavorite }: NoteProps) {
     const router = useRouter();
-    return (   
+    return (
         <TouchableOpacity
-         style={styles.noteContainer}
-         onPress={() => router.push(`/(tabs)/notes/${id}` as any)}
-         >
+            style={styles.noteContainer}
+            onPress={() => router.push(`/(tabs)/notes/${id}` as any)}
+        >
             {isLocked ? (
                 <View style={styles.lockedContainer}>
                     <Text style={Typography.heading18}>Locked Note</Text>
-                    <Text style={Typography.secondary16}>{date}</Text>
-                    <TouchableOpacity onPress={() => toggleLocked(id)}>
-                        <Text>unlock</Text>
+                    <TouchableOpacity
+                        onPress={() => toggleLocked(id)}                    >
+                        <Octicons name="unlock" size={36} color={"black"} />
+
                     </TouchableOpacity>
                 </View>
             ) : (
@@ -52,11 +53,8 @@ export default function Note({ id, title, content, date, isLocked, isFavorite, t
                             }
                         </TouchableOpacity>
 
-                        <TouchableOpacity
-                            onPress={() => toggleLocked(id)}
-                        >
+                        <TouchableOpacity onPress={() => toggleLocked(id)}>
                             <Octicons name="lock" size={16} color={"black"} />
-
                         </TouchableOpacity>
                     </View>
                 </>
@@ -72,8 +70,8 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.cardBackgroundColor,
         borderRadius: 8,
         padding: 8,
-        width: "48.8%", // fix this shit
         height: 140,
+        width: "48%"
     },
     textContainer: {
         flexDirection: "column",
@@ -83,8 +81,7 @@ const styles = StyleSheet.create({
     },
 
     lockedContainer: {
-        height: 140,
-        justifyContent: "center",
+        justifyContent: "space-between",
     }
 
 })
