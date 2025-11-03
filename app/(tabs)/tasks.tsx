@@ -6,6 +6,7 @@ import Fab from "@/components/Fab";
 import ProfileSection from "@/components/ProfileSection";
 import PageStyle from "@/constants/PageStyle";
 import Typography from "@/constants/Typography";
+import { useGlobalContext } from "@/context/GlobalProvider.js";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useEffect, useRef, useState } from "react";
 import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -22,12 +23,12 @@ type Activity = {
 }
 
 export default function SavedScreen() {
-
+    const { user, setUser, setIsLogged } = useGlobalContext();
     const bottomSheetRef = useRef<BottomSheetModal>(null);
     const handlePresentPress = () => bottomSheetRef.current?.present();
-    const [error, setError] = useState<any>(null);
 
     useEffect(() => {
+        console.log("useEffect in tasks.tsx running, user:", user?.name);
         init();
 
         const unsubscribe = client.subscribe([
@@ -51,7 +52,7 @@ export default function SavedScreen() {
         return () => {
             unsubscribe();
         }
-    }, [])
+    }, [user])
 
     async function init() {
         getData();
@@ -60,12 +61,11 @@ export default function SavedScreen() {
     async function getData() {
         try {
             const DBtasks = await tables.listRows(config.db, config.col.tasks);
-            const DBtests = await tables.listRows(config.db, config.col.tests);
+            const DBtests = await tables.listRows(config.db, config.col.tests); // this has to be tests
             setTasks(DBtasks.rows)
             setTests(DBtests.rows)
         } catch (err) {
-            setError(err)
-            console.error(error)
+            console.error("error getting data in tasks: " + err)
         }
     }
 

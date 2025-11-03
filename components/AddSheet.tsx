@@ -1,12 +1,13 @@
 import Colors from "@/constants/Colors";
 import Typography from "@/constants/Typography";
+import { useGlobalContext } from "@/context/GlobalProvider.js";
 import { BottomSheetBackdrop, BottomSheetModal, BottomSheetTextInput, BottomSheetView, useBottomSheetModal } from "@gorhom/bottom-sheet";
 import Octicons from "@react-native-vector-icons/octicons";
-import { forwardRef, useCallback, useEffect, useMemo, useState } from "react";
+import { forwardRef, useCallback, useMemo, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { ID, Permission, Role } from "react-native-appwrite";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
-import { checkUser, config, tables } from "../lib/appwrite.js";
+import { config, tables } from "../lib/appwrite.js";
 import Separator from "./Separator";
 
 
@@ -19,29 +20,30 @@ type Ref = BottomSheetModal;
 
 
 const AddSheet = forwardRef<Ref, Props>((props, ref) => {
-    const [user, setUser] = useState<any>(null);
+    // const [user, setUser] = useState<any>(null);
 
 
-    useEffect(() => {
-        init();
-    }, [])
+    // useEffect(() => {
+    //     init();
+    // }, [])
 
-    async function init() {
-        getData();
-    }
+    // async function init() {
+    //     getData();
+    // }
 
-    async function getData() {
-        try {
-            setUser(checkUser);
-            console.log("user: " + user.$id);
-        } catch (err) {
-            setError(err)
-            console.error("error getting data in AddSheet: " + error)
-        }
-    }
-    const [error, setError] = useState<any>(null);
+    // async function getData() {
+    //     try {
+    //         setUser(checkUser());
+    //         console.log("user: " + user)
+    //     } catch (err) {
+    //         setError(err)
+    //         console.error("error getting data in AddSheet: " + error)
+    //     }
+    // }
+    // const [error, setError] = useState<any>(null);
 
-
+    const { user, setUser, setIsLogged } = useGlobalContext();
+    
     if (props.defaultSelectedType === undefined) props.defaultSelectedType = "task";
     const { dismiss } = useBottomSheetModal();
     const snapPoints = useMemo(() => ["25%", "50%", "75%", "90%"], []);
@@ -68,7 +70,7 @@ const AddSheet = forwardRef<Ref, Props>((props, ref) => {
             console.log("please fill all task fields")
             return;
         }
-
+        console.log(user.$id)
         tables.createRow(
             config.db,
             config.col.tasks,
@@ -100,6 +102,11 @@ const AddSheet = forwardRef<Ref, Props>((props, ref) => {
             config.col.tests,
             ID.unique(),
             { date: actDate, body: actBody, coins: 40, completed: false, subject: actSubject },
+            [
+                Permission.read(Role.user(user.$id)),    // Only this user can read
+                Permission.update(Role.user(user.$id)),  // Only this user can update
+                Permission.delete(Role.user(user.$id))   // Only this user can delete
+            ]
         ).then(function (response) {
             setActBody("");
             setActDate("");
@@ -118,9 +125,14 @@ const AddSheet = forwardRef<Ref, Props>((props, ref) => {
 
         tables.createRow(
             config.db,
-            config.col.notes, // change to notes
+            config.col.notes, 
             ID.unique(),
             { title: noteTitle, content: noteContent, date: "Now", isLocked: noteLocked },
+            [
+                Permission.read(Role.user(user.$id)),    // Only this user can read
+                Permission.update(Role.user(user.$id)),  // Only this user can update
+                Permission.delete(Role.user(user.$id))   // Only this user can delete
+            ]
         ).then(function (response) {
             setNoteTitle("");
             setNoteContent("");
