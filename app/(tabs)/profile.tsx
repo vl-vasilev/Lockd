@@ -10,8 +10,8 @@ import Octicons from "@react-native-vector-icons/octicons";
 import { useRef } from "react";
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import Account from "../../components/auth/account";
 import { logOut } from "../../lib/appwrite.js";
-import Account from "./auth/account";
 
 
 
@@ -77,7 +77,7 @@ export default function ProfileScreen() {
 
               <View style={styles.stat}>
                 <View style={styles.statTop}>
-                  <Octicons name={"clock-fill"} size={24} color={"black"} />
+                  <Octicons name={"clock-fill"} size={16} color={"black"} />
                   <Text style={Typography.heading20}>12h</Text>
                 </View>
                 <Text style={Typography.secondary14}>Focus time</Text>
@@ -87,7 +87,7 @@ export default function ProfileScreen() {
 
               <View style={styles.stat}>
                 <View style={styles.statTop}>
-                  <Octicons name={"chevron-up"} size={24} color={"green"} />
+                  <Octicons name={"chevron-up"} size={16} color={"green"} />
                   <Text style={Typography.heading20}>4th</Text>
                 </View>
                 <Text style={Typography.secondary14}>Ranking</Text>
@@ -139,7 +139,7 @@ export default function ProfileScreen() {
               style={{ marginTop: 32, }}
               onPress={handleLogout}
             >
-              <Text style={[Typography.secondary14, { color: "red" }]}>
+              <Text style={[Typography.secondary14, { color: "red", paddingHorizontal: 16, paddingVertical: 8, backgroundColor: "#f8d0d0ff", borderRadius: 8 }]}>
                 logout
               </Text>
             </TouchableOpacity>
@@ -213,8 +213,8 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   statCoin: {
-    width: 28,
-    height: 28,
+    width: 18,
+    height: 18,
   },
   refferal: {
     backgroundColor: Colors.primary500,

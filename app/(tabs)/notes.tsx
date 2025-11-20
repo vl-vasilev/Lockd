@@ -7,12 +7,14 @@ import ProfileSection from "@/components/ProfileSection";
 import Colors from "@/constants/Colors";
 import PageStyle from "@/constants/PageStyle";
 import Typography from "@/constants/Typography";
+import { useGlobalContext } from "@/context/GlobalProvider.js";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import Octicons from "@react-native-vector-icons/octicons";
 import { useEffect, useRef, useState } from "react";
 import { FlatList, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { client, config, tables } from "../../lib/appwrite.js";
+
 
 
 interface NoteData {
@@ -24,77 +26,49 @@ interface NoteData {
     isLocked: boolean;
 }
 
-// const data: NoteData[] = [
-//     {
-//         id: 1,
-//         title: "My First Note",
-//         content: "This is my first note about something important I want to remember.",
-//         date: "2024-01-15",
-//         isFavorite: false,
-//         isLocked: false,
-//     },
-//     {
-//         id: 2,
-//         title: "Shopping List",
-//         content: "Don't forget to buy milk, eggs, bread, and coffee for this week.",
-//         date: "2024-01-16",
-//         isFavorite: false,
-//         isLocked: false,
-//     },
-//     {
-//         id: 3,
-//         title: "Meeting Notes",
-//         content: "Important discussion points from today's team meeting about the new project.",
-//         date: "2024-01-17",
-//         isFavorite: false,
-//         isLocked: false,
-//     },
-//     {
-//         id: 4,
-//         title: "Book Ideas",
-//         content: "List of books I want to read this month including fiction and non-fiction.",
-//         date: "2024-01-18",
-//         isFavorite: false,
-//         isLocked: false,
-//     },
-//     {
-//         id: 5,
-//         title: "Book Ideas",
-//         content: "List of books I want to read this month including fiction and non-fiction.",
-//         date: "2024-01-18",
-//         isFavorite: false,
-//         isLocked: false,
-//     },
-// ];
-
 export default function NotesScreen() {
     const bottomSheetRef = useRef<BottomSheetModal>(null);
     const handlePresentPress = () => bottomSheetRef.current?.present();
+    const { user, setUser, setIsLogged } = useGlobalContext();
+
+    const [searchQuery, setSearchQuery] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState<string>("all");
+    const [notes, setNotes] = useState<Array<any>>([]);
 
     const [error, setError] = useState<any>(null);
 
     useEffect(() => {
         init();
-
         const unsubscribe = client.subscribe([
-            `databases.${config.db}.tables.${config.col.notes}.rows`, // listens to notes
+            `databases.${config.db}.tables.${config.col.notes}.rows`,
         ], (response) => {
-            if (response.events[0].includes(config.col.notes && "create")) {
+            const event = response.events[0];
+            const payload = response.payload as NoteData;
+
+            if (event.includes(config.col.notes) && event.includes("create")) {
                 setNotes(prevNotes => [
-                    response.payload,
+                    payload,
                     ...prevNotes
-                ])
-            }
-            else if (response.events[0].includes(config.col.notes && "delete")) {
+                ]);
+            } else if (event.includes(config.col.notes) && event.includes("update")) {
+                // Handle updates
+                setNotes(prevNotes =>
+                    prevNotes.map(note =>
+                        note.$id === payload.$id
+                            ? payload
+                            : note
+                    )
+                );
+            } else if (event.includes(config.col.notes) && event.includes("delete")) {
                 getData();
             }
-
-        })
+        });
 
         return () => {
             unsubscribe();
-        }
-    }, [])
+        };
+    }, [user]);
+
 
     async function init() {
         getData();
@@ -110,9 +84,6 @@ export default function NotesScreen() {
         }
     }
 
-    const [searchQuery, setSearchQuery] = useState('');
-    const [selectedCategory, setSelectedCategory] = useState<string>("all");
-    const [notes, setNotes] = useState<Array<any>>([]);
 
     function toggleFavorite(item: NoteData) {
         setNotes(prevNotes =>
@@ -263,13 +234,13 @@ export default function NotesScreen() {
                             scrollEnabled={false}
                             data={filteredNotes}
                             numColumns={2}
-                            columnWrapperStyle = {{gap: 8, marginVertical: 4}}
+                            columnWrapperStyle={{ gap: 8, marginVertical: 4 }}
                             renderItem={({ item, }) => <Note
                                 key={item.$id}
                                 id={item.$id}
                                 title={item.title}
                                 content={item.content}
-                                date={item.date}
+                                date={item.$createdAt.slice(0, 10)}
                                 isLocked={item.isLocked}
                                 isFavorite={item.isFavorite}
                                 toggleLocked={() => toggleLocked(item)}

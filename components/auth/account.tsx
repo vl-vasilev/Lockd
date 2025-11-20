@@ -4,7 +4,7 @@ import { useGlobalContext } from "@/context/GlobalProvider.js";
 import { useState } from "react";
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { checkUser, createUser, logIntoAccount, logOut } from "../../../lib/appwrite.js";
+import { checkUser, createUser, logIntoAccount, logOut } from "../../lib/appwrite.js";
 
 
 export default function Account() {

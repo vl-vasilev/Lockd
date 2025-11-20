@@ -20,34 +20,6 @@ type DayCardData = {
     date: string;
 }
 
-const DAYCARDDATA: DayCardData[] = [
-    {
-        id: "1",
-        day: "Mon",
-        date: "15",
-    },
-    {
-        id: "2",
-        day: "Tue",
-        date: "16",
-    },
-    {
-        id: "3",
-        day: "Wed",
-        date: "17",
-    },
-    {
-        id: "4",
-        day: "Thu",
-        date: "18",
-    },
-    {
-        id: "5",
-        day: "Fri",
-        date: "19",
-    },
-
-]
 
 type Subject = {
     name: string;
@@ -266,7 +238,7 @@ const INITIALSUBJECTDATA: SubjectData[] = [
 export default function SavedScreen() {
     const bottomSheetRef = useRef<BottomSheetModal>(null);
     const handlePresentPress = () => bottomSheetRef.current?.present();
-    
+
     const [selectedDayId, setSelectedDayId] = useState<string>("1");
     const [subjectData, setSubjectData] = useState<SubjectData[]>(INITIALSUBJECTDATA);
 
@@ -295,6 +267,31 @@ export default function SavedScreen() {
         });
     }
 
+    function getWeekDates(): DayCardData[] {
+        const today = new Date();
+        const currentDay = today.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+
+        // Calculate the offset to Monday (start of week)
+        const mondayOffset = currentDay === 0 ? -6 : 1 - currentDay;
+
+        const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+        const weekDates: DayCardData[] = [];
+
+        days.forEach((day, index) => {
+            const date = new Date(today);
+            date.setDate(today.getDate() + mondayOffset + index);
+
+            weekDates.push({
+                id: (index + 1).toString(),
+                day: day,
+                date: date.getDate().toString(),
+            });
+        });
+
+        return weekDates;
+    }
+
+    const DAYCARDDATA = getWeekDates();
 
 
     return (

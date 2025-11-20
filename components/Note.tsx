@@ -28,7 +28,6 @@ export default function Note({ id, title, content, date, isLocked, isFavorite, t
                     <TouchableOpacity
                         onPress={() => toggleLocked(id)}                    >
                         <Octicons name="unlock" size={36} color={"black"} />
-
                     </TouchableOpacity>
                 </View>
             ) : (
@@ -82,6 +81,7 @@ const styles = StyleSheet.create({
 
     lockedContainer: {
         justifyContent: "space-between",
+        alignItems: "center",
     }
 
 })

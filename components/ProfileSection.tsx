@@ -1,20 +1,21 @@
 import Colors from "@/constants/Colors";
 import Typography from "@/constants/Typography";
+import { useGlobalContext } from "@/context/GlobalProvider.js";
 import { Link } from "expo-router";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
 export default function ProfileCard() {
-
+    const { user, setUser, setIsLogged, loading } = useGlobalContext();
 
     return (
-        <Link href = "/profile" asChild>
+        <Link href="/profile" asChild>
             <Pressable>
                 <View style={styles.card}>
                     <View style={styles.profileContainer}>
                         <Image source={require('../assets/images/avatar.png')} style={styles.avatar} />
                         <View style={styles.cardTextContainer}>
                             <Text style={[Typography.secondary14, Typography.selectedText]}> Good Morning </Text>
-                            <Text style={[Typography.heading20, Typography.selectedText]}> Vlado </Text>
+                            <Text style={[Typography.heading20, Typography.selectedText]}> {user ? user.name : "Guest"} </Text>
                         </View>
                     </View>
 
