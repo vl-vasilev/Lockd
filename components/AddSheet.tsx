@@ -112,7 +112,7 @@ const AddSheet = forwardRef<Ref, Props>((props, ref) => {
             setActDate("");
             setActSubject("");
         }, function (error) {
-            console.log(error)
+            console.log("error creating test: " + error)
         })
         dismiss()
     }

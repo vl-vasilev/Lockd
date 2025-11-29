@@ -15,6 +15,34 @@ interface NoteProps {
     toggleFavorite: (id: number) => void;
 }
 
+function formatDate(dateString: string): string {
+    const [year, month, day] = dateString.split('-');
+    
+    const months = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+    
+    function getOrdinalSuffix(day: string): string {
+        const dayNum = parseInt(day);
+        if (dayNum >= 11 && dayNum <= 13) {
+            return 'th';
+        }
+        switch (dayNum % 10) {
+            case 1: return 'st';
+            case 2: return 'nd';
+            case 3: return 'rd';
+            default: return 'th';
+        }
+    }
+    
+    const dayNum = parseInt(day);
+    const monthName = months[parseInt(month) - 1];
+    const suffix = getOrdinalSuffix(day);
+    
+    return `${dayNum}${suffix} ${monthName}`;
+}
+
 export default function Note({ id, title, content, date, isLocked, isFavorite, toggleLocked, toggleFavorite }: NoteProps) {
     const router = useRouter();
     return (
@@ -40,7 +68,7 @@ export default function Note({ id, title, content, date, isLocked, isFavorite, t
                                     content.slice(0, 60) + "..." : content}
                             </Text>
                         </View>
-                        <Text style={Typography.secondary16}>{date}</Text>
+                        <Text style={Typography.secondary16}>{formatDate(date)}</Text>
                     </View>
                     <View style={{ flexDirection: "column", justifyContent: "space-between" }}>
                         <TouchableOpacity

@@ -17,13 +17,41 @@ interface ActivityProps {
 }
 
 
+function formatDate(dateString: string): string {
+    const [year, month, day] = dateString.split('-');
+    
+    const months = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+    
+    function getOrdinalSuffix(day: string): string {
+        const dayNum = parseInt(day);
+        if (dayNum >= 11 && dayNum <= 13) {
+            return 'th';
+        }
+        switch (dayNum % 10) {
+            case 1: return 'st';
+            case 2: return 'nd';
+            case 3: return 'rd';
+            default: return 'th';
+        }
+    }
+    
+    const dayNum = parseInt(day);
+    const monthName = months[parseInt(month) - 1];
+    const suffix = getOrdinalSuffix(day);
+    
+    return `${dayNum}${suffix} ${monthName}`;
+}
 
 export default function Activity({ id, date, coins, body, completed, toggleCompleted, subject }: ActivityProps) {
+    
     return (
         <View style={[
             styles.activityContainer,
             completed && { opacity: 0.5 },
-            { borderRightColor: subjectColors[subject] || Colors.primary500 },
+            { borderRightColor: subjectColors[subject.toLowerCase()] || Colors.primary500 },
         ]}>
             <View style={styles.contentContainer}>
                 <View style={styles.textContainer}>
@@ -31,7 +59,7 @@ export default function Activity({ id, date, coins, body, completed, toggleCompl
                         <Text style={Typography.heading16}>{subject.charAt(0).toUpperCase() + subject.slice(1)}</Text>
                         <View style={styles.dateContainer}>
                             <Octicons name="calendar" size={16} color={"gray"} />
-                            <Text style={Typography.default16}> {date}</Text>
+                            <Text style={Typography.default16}> {formatDate(date)}</Text>
                         </View>
                     </View>
                     <View style={styles.detailsContainer}>
@@ -56,7 +84,7 @@ export default function Activity({ id, date, coins, body, completed, toggleCompl
 
             <BouncyCheckbox
                 size={24}
-                fillColor={subjectColors[subject] || Colors.primary500}
+                fillColor={subjectColors[subject.toLowerCase()] || Colors.primary500}
                 disableText={true}
                 onPress={() => toggleCompleted(id)}
                 isChecked={completed}

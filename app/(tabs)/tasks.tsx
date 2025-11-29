@@ -61,7 +61,7 @@ export default function SavedScreen() {
     async function getData() {
         try {
             const DBtasks = await tables.listRows(config.db, config.col.tasks);
-            const DBtests = await tables.listRows(config.db, config.col.tests); // this has to be tests
+            const DBtests = await tables.listRows(config.db, config.col.tests); 
             setTasks(DBtasks.rows)
             setTests(DBtests.rows)
         } catch (err) {
