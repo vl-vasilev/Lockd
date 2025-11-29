@@ -40,3 +40,6 @@ app-example
 
 # custom files
 accounts.txt
+
+# folders
+lib/
