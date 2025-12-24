@@ -35,13 +35,13 @@ export default function SavedScreen() {
             `databases.${config.db}.tables.${config.col.tasks}.rows`, // listens to tasks
             `databases.${config.db}.tables.${config.col.tests}.rows`, // listens to tests
         ], (response) => {
-            if (response.events[0].includes(config.col.tasks && "create")) {
+            if (response.events[0].includes(config.col.tasks) && response.events[0].includes("create")) {
                 setTasks(prevTasks => [
                     response.payload,
                     ...prevTasks
                 ])
             }
-            else if (response.events[0].includes(config.col.tests && "create")) {
+            else if (response.events[0].includes(config.col.tests) && response.events[0].includes("create")) {
                 setTests(prevTests => [
                     response.payload,
                     ...prevTests
@@ -61,7 +61,7 @@ export default function SavedScreen() {
     async function getData() {
         try {
             const DBtasks = await tables.listRows(config.db, config.col.tasks);
-            const DBtests = await tables.listRows(config.db, config.col.tests); 
+            const DBtests = await tables.listRows(config.db, config.col.tests);
             setTasks(DBtasks.rows)
             setTests(DBtests.rows)
         } catch (err) {
@@ -195,7 +195,7 @@ export default function SavedScreen() {
             <SafeAreaView style={[PageStyle, { position: 'relative' }]}>
                 <ProfileSection />
                 <Fab openSheet={handlePresentPress} />
-                <AddSheet ref={bottomSheetRef}/>
+                <AddSheet ref={bottomSheetRef} />
                 <ScrollView
                     showsVerticalScrollIndicator={false}
                     style={{ paddingHorizontal: 16 }}

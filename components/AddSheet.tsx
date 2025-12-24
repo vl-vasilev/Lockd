@@ -70,7 +70,6 @@ const AddSheet = forwardRef<Ref, Props>((props, ref) => {
             console.log("please fill all task fields")
             return;
         }
-        console.log(user.$id)
         tables.createRow(
             config.db,
             config.col.tasks,
@@ -85,6 +84,7 @@ const AddSheet = forwardRef<Ref, Props>((props, ref) => {
             setActBody("");
             setActDate("");
             setActSubject("");
+            console.log("added task")
         }, function (error) {
             console.log("error creating task: " + error)
         })
@@ -111,6 +111,7 @@ const AddSheet = forwardRef<Ref, Props>((props, ref) => {
             setActBody("");
             setActDate("");
             setActSubject("");
+            console.log("added test")
         }, function (error) {
             console.log("error creating test: " + error)
         })
@@ -137,6 +138,7 @@ const AddSheet = forwardRef<Ref, Props>((props, ref) => {
             setNoteTitle("");
             setNoteContent("");
             setNoteLocked(false);
+            console.log("added note")
         }, function (error) {
             console.log(error)
         })
