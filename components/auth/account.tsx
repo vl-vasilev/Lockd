@@ -9,7 +9,7 @@ import { checkUser, createUser, logIntoAccount, logOut } from "../../lib/appwrit
 
 export default function Account() {
 
-    const [signUp, setSignUp] = useState<boolean>(true);
+    const [signUp, setSignUp] = useState<boolean>(false);
 
     const [email, setEmail] = useState<string>("")
     const [password, setPassword] = useState<string>("")
@@ -18,14 +18,16 @@ export default function Account() {
     const { user, setUser, setIsLogged, loading } = useGlobalContext();
 
     function setUserFieds(userNumber: number) {
+        setPassword("test123456");
         if (userNumber === 1) {
             setUsername("vlado1");
             setEmail("test1@gmail.com");
-            setPassword("test123456");
         } else if (userNumber === 2) {
             setUsername("vlado2");
             setEmail("test2@gmail.com");
-            setPassword("test123456");
+        } else if (userNumber === 3) {
+            setUsername("vlado3");
+            setEmail("test3@gmail.com");
         } else { console.log("invalid user number") }
     }
 
@@ -125,6 +127,14 @@ export default function Account() {
                     >
                         <Text>
                             Fill User 2
+                        </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => setUserFieds(3)}
+                        style={styles.fillUserFieldsButton}
+                    >
+                        <Text>
+                            Fill User 3
                         </Text>
                     </TouchableOpacity>
                 </View>
