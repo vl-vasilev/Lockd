@@ -11,7 +11,7 @@ const subjectColors: SubjectColors = {
     physics: "#03a9f4",
     biology: "#009688",
     chemistry: "#8bc34a",
-    philosophy: "#cddc39",
+    philosophy: "#cddc39",  
     computerScience: "#ff9800",
 };
 
