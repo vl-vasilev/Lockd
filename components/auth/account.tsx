@@ -32,14 +32,13 @@ export default function Account() {
     }
 
     async function handleAuth() {
-        // Login or create account
         if (signUp) {
             await createUser(email, password, username);
         } else {
             await logIntoAccount(email, password);
         }
 
-        // Update global context
+        // Ъпдейт на глобалния контекст
         const currentUser = await checkUser();
         setUser(currentUser);
         setIsLogged(true);
@@ -48,7 +47,7 @@ export default function Account() {
     async function handleLogout() {
         await logOut();
 
-        // Clear global context
+        // Изчистване на глобалния контекст
         setUser(null);
         setIsLogged(false);
 
@@ -138,15 +137,6 @@ export default function Account() {
                         </Text>
                     </TouchableOpacity>
                 </View>
-
-                {/* <TouchableOpacity
-                    style={{ marginTop: 32, }}
-                    onPress={handleLogout}
-                >
-                    <Text style={[Typography.secondary14, { color: "red" }]}>
-                        logout
-                    </Text>
-                </TouchableOpacity> */}
             </SafeAreaView>
         </SafeAreaProvider>
     );

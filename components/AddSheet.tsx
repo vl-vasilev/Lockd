@@ -20,30 +20,8 @@ type Ref = BottomSheetModal;
 
 
 const AddSheet = forwardRef<Ref, Props>((props, ref) => {
-    // const [user, setUser] = useState<any>(null);
-
-
-    // useEffect(() => {
-    //     init();
-    // }, [])
-
-    // async function init() {
-    //     getData();
-    // }
-
-    // async function getData() {
-    //     try {
-    //         setUser(checkUser());
-    //         console.log("user: " + user)
-    //     } catch (err) {
-    //         setError(err)
-    //         console.error("error getting data in AddSheet: " + error)
-    //     }
-    // }
-    // const [error, setError] = useState<any>(null);
-
     const { user, setUser, setIsLogged } = useGlobalContext();
-    
+
     if (props.defaultSelectedType === undefined) props.defaultSelectedType = "task";
     const { dismiss } = useBottomSheetModal();
     const snapPoints = useMemo(() => ["25%", "50%", "75%", "90%"], []);
@@ -54,12 +32,10 @@ const AddSheet = forwardRef<Ref, Props>((props, ref) => {
 
     const [selectedType, setSelectedType] = useState<string>(props.defaultSelectedType);
 
-    // task / test states
     const [actBody, setActBody] = useState<string>("");
     const [actDate, setActDate] = useState<string>("");
     const [actSubject, setActSubject] = useState<string>("");
 
-    // note states
     const [noteTitle, setNoteTitle] = useState<string>("");
     const [noteContent, setNoteContent] = useState<string>("");
     const [noteLocked, setNoteLocked] = useState<boolean>(false);
@@ -76,9 +52,9 @@ const AddSheet = forwardRef<Ref, Props>((props, ref) => {
             ID.unique(),
             { date: actDate, body: actBody, coins: 40, completed: false, subject: actSubject },
             [
-                Permission.read(Role.user(user.$id)),    // Only this user can read
-                Permission.update(Role.user(user.$id)),  // Only this user can update
-                Permission.delete(Role.user(user.$id))   // Only this user can delete
+                Permission.read(Role.user(user.$id)),
+                Permission.update(Role.user(user.$id)),
+                Permission.delete(Role.user(user.$id))
             ]
         ).then(function (response) {
             setActBody("");
@@ -103,9 +79,9 @@ const AddSheet = forwardRef<Ref, Props>((props, ref) => {
             ID.unique(),
             { date: actDate, body: actBody, coins: 40, completed: false, subject: actSubject },
             [
-                Permission.read(Role.user(user.$id)),    // Only this user can read
-                Permission.update(Role.user(user.$id)),  // Only this user can update
-                Permission.delete(Role.user(user.$id))   // Only this user can delete
+                Permission.read(Role.user(user.$id)),
+                Permission.update(Role.user(user.$id)),
+                Permission.delete(Role.user(user.$id))
             ]
         ).then(function (response) {
             setActBody("");
@@ -126,13 +102,13 @@ const AddSheet = forwardRef<Ref, Props>((props, ref) => {
 
         tables.createRow(
             config.db,
-            config.col.notes, 
+            config.col.notes,
             ID.unique(),
             { title: noteTitle, content: noteContent, date: "Now", isLocked: noteLocked },
             [
-                Permission.read(Role.user(user.$id)),    // Only this user can read
-                Permission.update(Role.user(user.$id)),  // Only this user can update
-                Permission.delete(Role.user(user.$id))   // Only this user can delete
+                Permission.read(Role.user(user.$id)),
+                Permission.update(Role.user(user.$id)),
+                Permission.delete(Role.user(user.$id))
             ]
         ).then(function (response) {
             setNoteTitle("");
@@ -152,7 +128,7 @@ const AddSheet = forwardRef<Ref, Props>((props, ref) => {
             snapPoints={snapPoints}
             enablePanDownToClose={true}
             backdropComponent={renderBackdrop}
-            index={2} // there is an invisible index 0 zero which is 0% so index here = index + 1 in the array
+            index={2} // има невидим индекс 0 който е 0% и тук индекса е индекс + 1 в масива
             keyboardBehavior="extend"
         >
             <BottomSheetView style={styles.sheetContainer}>

@@ -1,3 +1,4 @@
+import Activity from "@/components/Activity";
 import AddSheet from "@/components/AddSheet";
 import Card from "@/components/Card";
 import Fab from "@/components/Fab";
@@ -8,7 +9,7 @@ import Typography from "@/constants/Typography";
 import { useGlobalContext } from "@/context/GlobalProvider.js";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useEffect, useRef, useState } from "react";
-import { ScrollView, StyleSheet, Text } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 import { Calendar } from "react-native-calendars";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { client, config, tables } from "../../lib/appwrite.js";
@@ -70,17 +71,29 @@ export default function Index() {
       `databases.${config.db}.tables.${config.col.tasks}.rows`,
       `databases.${config.db}.tables.${config.col.tests}.rows`,
     ], (response) => {
-      if (response.events[0].includes(config.col.tasks && "create")) {
-        setTasks(prevTasks => [
-          response.payload as Activity,
-          ...prevTasks
-        ])
+      if (response.events[0].includes(config.col.tasks)) {
+        if (response.events[0].includes("create")) {
+          setTasks(prevTasks => [
+            response.payload as Activity,
+            ...prevTasks
+          ])
+        } else if (response.events[0].includes("update")) {
+          setTasks(prevTasks => prevTasks.map(task =>
+            task.$id === (response.payload as Activity).$id ? (response.payload as Activity) : task
+          ))
+        }
       }
-      else if (response.events[0].includes(config.col.tests && "create")) {
-        setTests(prevTests => [
-          response.payload as Activity,
-          ...prevTests
-        ])
+      else if (response.events[0].includes(config.col.tests)) {
+        if (response.events[0].includes("create")) {
+          setTests(prevTests => [
+            response.payload as Activity,
+            ...prevTests
+          ])
+        } else if (response.events[0].includes("update")) {
+          setTests(prevTests => prevTests.map(test =>
+            test.$id === (response.payload as Activity).$id ? (response.payload as Activity) : test
+          ))
+        }
       }
     });
 
@@ -89,7 +102,6 @@ export default function Index() {
     }
   }, [user]);
 
-  // Update marked dates whenever tasks or tests change
   useEffect(() => {
     updateMarkedDates();
   }, [tasks, tests]);
@@ -109,10 +121,46 @@ export default function Index() {
     }
   }
 
+
+
+  function toggleCompletedTask(item: Activity) {
+    setTasks(prevTasks =>
+      prevTasks.map(task =>
+        task.$id === item.$id ? { ...task, completed: !task.completed } : task
+      )
+    );
+
+    tables.updateRow(
+      config.db,
+      config.col.tasks,
+      item.$id,
+      { completed: !item.completed },
+    ).then(function (response) {
+    }, function (error) {
+      console.log(error)
+    })
+  };
+
+  function toggleCompletedTest(item: Activity) {
+    setTests(prevTests =>
+      prevTests.map(test =>
+        test.$id === item.$id ? { ...test, completed: !test.completed } : test
+      )
+    );
+    tables.updateRow(
+      config.db,
+      config.col.tests,
+      item.$id,
+      { completed: !item.completed },
+    ).then(function (response) {
+    }, function (error) {
+      console.log(error)
+    })
+  }
+
   function updateMarkedDates() {
     const newMarkedDates: MarkedDatesType = {};
 
-    // Process tasks
     tasks.forEach((task) => {
       const date = task.date;
       const subject = task.subject.toLowerCase() as keyof typeof SUBJECTDOTCOLORS;
@@ -122,7 +170,6 @@ export default function Index() {
         newMarkedDates[date] = { dots: [] };
       }
 
-      // Only add if we don't already have 3 dots and this subject isn't already added
       if ((newMarkedDates[date].dots?.length ?? 0) < 3) {
         const existingDot = newMarkedDates[date].dots?.find(dot =>
           dot.name.toLowerCase() === task.subject.toLowerCase() && dot.color === color
@@ -137,7 +184,6 @@ export default function Index() {
       }
     });
 
-    // Process tests
     tests.forEach((test) => {
       const date = test.date;
       const subject = test.subject.toLowerCase() as keyof typeof SUBJECTDOTCOLORS;
@@ -147,7 +193,6 @@ export default function Index() {
         newMarkedDates[date] = { dots: [] };
       }
 
-      // Only add if we don't already have 3 dots and this subject isn't already added
       if ((newMarkedDates[date].dots?.length ?? 0) < 3) {
         const existingDot = newMarkedDates[date].dots?.find(dot =>
           dot.name.toLowerCase() === test.subject.toLowerCase() && dot.color === color
@@ -179,7 +224,6 @@ export default function Index() {
 
   const dotNames = finalMarkedDates[selectedDate]?.dots?.map(dot => dot.name) || [];
 
-  // Get activities for selected date
   const selectedDateTasks = tasks.filter(task => task.date === selectedDate);
   const selectedDateTests = tests.filter(test => test.date === selectedDate);
 
@@ -202,7 +246,6 @@ export default function Index() {
             markingType="multi-dot"
             showSixWeeks={false}
 
-            style={styles.calendar}
             theme={{
               backgroundColor: Colors.cardBackgroundColor,
               textSectionTitleColor: '#b6c1cd',
@@ -238,11 +281,20 @@ export default function Index() {
               <Text style={[Typography.heading16, { marginTop: 16, marginBottom: 8 }]}>
                 Tasks:
               </Text>
-              {selectedDateTasks.map((task) => (
-                <Text key={task.$id} style={{ marginBottom: 4 }}>
-                  • {task.body} ({task.subject})
-                </Text>
-              ))}
+              <View style={{ gap: 8 }}>
+                {selectedDateTasks.map((task) => (
+                  <Activity
+                    key={task.$id}
+                    id={task.$id as any}
+                    date={task.date}
+                    body={task.body}
+                    coins={task.coins}
+                    completed={task.completed}
+                    toggleCompleted={() => toggleCompletedTask(task)}
+                    subject={task.subject}
+                  />
+                ))}
+              </View>
             </>
           )}
 
@@ -251,11 +303,20 @@ export default function Index() {
               <Text style={[Typography.heading16, { marginTop: 16, marginBottom: 8 }]}>
                 Tests:
               </Text>
-              {selectedDateTests.map((test) => (
-                <Text key={test.$id} style={{ marginBottom: 4 }}>
-                  • {test.body} ({test.subject})
-                </Text>
-              ))}
+              <View style={{ gap: 8 }}>
+                {selectedDateTests.map((test) => (
+                  <Activity
+                    key={test.$id}
+                    id={test.$id as any}
+                    date={test.date}
+                    body={test.body}
+                    coins={test.coins}
+                    completed={test.completed}
+                    toggleCompleted={() => toggleCompletedTest(test)}
+                    subject={test.subject}
+                  />
+                ))}
+              </View>
             </>
           )}
 
@@ -270,8 +331,3 @@ export default function Index() {
   );
 }
 
-const styles = StyleSheet.create({
-  calendar: {
-    width: '100%',
-  },
-})

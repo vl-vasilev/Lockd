@@ -23,14 +23,14 @@ export default function ProfileScreen() {
   const { user, setUser, setIsLogged, loading } = useGlobalContext();
 
   async function handleLogout() {
-        await logOut();
+    await logOut();
 
-        // Clear global context
-        setUser(null);
-        setIsLogged(false);
+    // Clear global context
+    setUser(null);
+    setIsLogged(false);
 
 
-    }
+  }
 
   return (
     <SafeAreaProvider>
@@ -147,9 +147,6 @@ export default function ProfileScreen() {
           </ScrollView>
           ) : (
             <Account />
-            // <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-            //   <Text style={Typography.heading20}>Please log in to view your profile.</Text>
-            // </View>
           )}
       </SafeAreaView >
     </SafeAreaProvider>

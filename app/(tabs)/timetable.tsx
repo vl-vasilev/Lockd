@@ -255,7 +255,7 @@ export default function SavedScreen() {
                         subjects: [
                             ...day.subjects,
                             {
-                                name: "NEW SUBJECT", // get input from the user ,  this is temporary
+                                name: "NEW SUBJECT",
                                 start: "00:00",
                                 end: "00:00",
                             },
@@ -269,9 +269,9 @@ export default function SavedScreen() {
 
     function getWeekDates(): DayCardData[] {
         const today = new Date();
-        const currentDay = today.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+        const currentDay = today.getDay();
 
-        // Calculate the offset to Monday (start of week)
+        // Пресмята разликата между текущия ден и понеделник
         const mondayOffset = currentDay === 0 ? -6 : 1 - currentDay;
 
         const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];

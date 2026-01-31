@@ -11,8 +11,8 @@ import { config, tables } from "../../../lib/appwrite.js";
 export default function NoteDetails() {
     const { id } = useLocalSearchParams();
     const noteId = id as string;
-    const [sContent, setSContent] = useState(""); // State for note content
-    const [sTitle, setSTitle] = useState(""); // State for note title
+    const [sContent, setSContent] = useState("");
+    const [sTitle, setSTitle] = useState("");
 
     useEffect(() => {
         console.log("note content changed: ", sContent);
@@ -20,29 +20,17 @@ export default function NoteDetails() {
             config.db,
             config.col.notes,
             noteId,
-            { content: sContent},
+            { content: sContent },
         ).then(function (response) {
         }, function (error) {
             console.log("error updating note content: ", error)
         })
-    },[sContent]) // maybe i should make it so it doesnt update on every keystroke but every few seconds
+    }, [sContent])
 
     useEffect(() => {
         setSContent("");
         setSTitle("");
         init();
-
-        // return () => {
-        //     tables.updateRow(
-        //         config.db,
-        //         config.col.notes,
-        //         noteId,
-        //         { content: sContent},
-        //     ).then(function (response) {
-        //     }, function (error) {
-        //         console.log(error)
-        //     })
-        // }
     }, [noteId])
 
     async function init() {

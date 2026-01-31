@@ -5,7 +5,7 @@ import { StyleSheet, Text, TouchableOpacity, View, ViewStyle } from "react-nativ
 interface ContactProps {
     style?: ViewStyle | ViewStyle[];
     name: string;
-    contactInfo: string; //can be email, phone, ig etc.
+    contactInfo: string;
 }
 
 export default function Contact({ style, name, contactInfo }: ContactProps) {

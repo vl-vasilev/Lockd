@@ -16,15 +16,14 @@ interface ActivityProps {
     subject: string;
 }
 
-
 function formatDate(dateString: string): string {
     const [year, month, day] = dateString.split('-');
-    
+
     const months = [
         'January', 'February', 'March', 'April', 'May', 'June',
         'July', 'August', 'September', 'October', 'November', 'December'
     ];
-    
+
     function getOrdinalSuffix(day: string): string {
         const dayNum = parseInt(day);
         if (dayNum >= 11 && dayNum <= 13) {
@@ -37,16 +36,16 @@ function formatDate(dateString: string): string {
             default: return 'th';
         }
     }
-    
+
     const dayNum = parseInt(day);
     const monthName = months[parseInt(month) - 1];
     const suffix = getOrdinalSuffix(day);
-    
+
     return `${dayNum}${suffix} ${monthName}`;
 }
 
 export default function Activity({ id, date, coins, body, completed, toggleCompleted, subject }: ActivityProps) {
-    
+
     return (
         <View style={[
             styles.activityContainer,

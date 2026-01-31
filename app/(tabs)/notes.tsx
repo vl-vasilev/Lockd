@@ -122,19 +122,19 @@ export default function NotesScreen() {
     };
 
     const filteredNotes = notes.filter(note => {
-        // filter by search
+        // филтриране по търсене
         const matchesSearch =
             note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
             note.content.toLowerCase().includes(searchQuery.toLowerCase());
 
-        // filter by category
+        // филтриране по категория
         let matchesCategory = true;
         if (selectedCategory === "favorites") {
             matchesCategory = note.isFavorite;
         } else if (selectedCategory === "locked") {
             matchesCategory = note.isLocked;
         }
-        // "all" shows everything so matchesCategory stays true
+        // "all" показва всички
 
         return matchesSearch && matchesCategory;
     });

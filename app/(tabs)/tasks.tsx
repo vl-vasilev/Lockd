@@ -32,21 +32,35 @@ export default function SavedScreen() {
         init();
 
         const unsubscribe = client.subscribe([
-            `databases.${config.db}.tables.${config.col.tasks}.rows`, // listens to tasks
-            `databases.${config.db}.tables.${config.col.tests}.rows`, // listens to tests
+            `databases.${config.db}.tables.${config.col.tasks}.rows`,
+            `databases.${config.db}.tables.${config.col.tests}.rows`,
         ], (response) => {
-            if (response.events[0].includes(config.col.tasks) && response.events[0].includes("create")) {
-                setTasks(prevTasks => [
-                    response.payload,
-                    ...prevTasks
-                ])
+            if (response.events[0].includes(config.col.tasks)) {
+                if (response.events[0].includes("create")) {
+                    setTasks(prevTasks => [
+                        response.payload,
+                        ...prevTasks
+                    ])
+                } else if (response.events[0].includes("update")) {
+                    const payload = response.payload as Activity;
+                    setTasks(prevTasks => prevTasks.map(task =>
+                        task.$id === payload.$id ? payload : task
+                    ))
+                }
             }
-            else if (response.events[0].includes(config.col.tests) && response.events[0].includes("create")) {
-                setTests(prevTests => [
-                    response.payload,
-                    ...prevTests
-                ])
-            }   
+            else if (response.events[0].includes(config.col.tests)) {
+                if (response.events[0].includes("create")) {
+                    setTests(prevTests => [
+                        response.payload,
+                        ...prevTests
+                    ])
+                } else if (response.events[0].includes("update")) {
+                    const payload = response.payload as Activity;
+                    setTests(prevTests => prevTests.map(test =>
+                        test.$id === payload.$id ? payload : test
+                    ))
+                }
+            }
         })
 
         return () => {
