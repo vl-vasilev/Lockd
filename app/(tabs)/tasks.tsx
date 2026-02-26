@@ -125,7 +125,8 @@ export default function SavedScreen() {
     }
 
     function renderTasks(completed: boolean) {
-        if (completed) { // return completed tasks
+        // връща завършени задачи
+        if (completed) {
             return (
                 <FlatList
                     scrollEnabled={false}
@@ -145,7 +146,8 @@ export default function SavedScreen() {
             )
         }
 
-        return ( // return NOT completed tasks
+        // връща незавършени задачи
+        return (
             <FlatList
                 scrollEnabled={false}
                 data={tasks.filter(task => !task.completed)}
@@ -165,7 +167,8 @@ export default function SavedScreen() {
     }
 
     function renderTests(completed: boolean) {
-        if (completed) { // return completed test
+        // връща завършени тестове
+        if (completed) {
             return (
                 <FlatList
                     scrollEnabled={false}
@@ -185,7 +188,8 @@ export default function SavedScreen() {
             )
         }
 
-        return ( // return NOT completed tests
+        // връща незавършени тестове
+        return (
             <FlatList
                 scrollEnabled={false}
                 data={tests.filter(test => !test.completed)}

@@ -64,9 +64,10 @@ export default function Index() {
   const [tests, setTests] = useState<Array<Activity>>([]);
 
   useEffect(() => {
-    console.log("useEffect in calendar running, user:", user?.name);
+    console.log("useEffect in calendar running, user:", user?.name); // дебъгване
     init();
 
+    // връзка с базата данни
     const unsubscribe = client.subscribe([
       `databases.${config.db}.tables.${config.col.tasks}.rows`,
       `databases.${config.db}.tables.${config.col.tests}.rows`,
